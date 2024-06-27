@@ -1,0 +1,126 @@
+body {
+    /* background-image: url('/images/navyLogo.png'); */
+    background-color: skyblue;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* background-size: 590px 590px; */
+    background-position: center;
+    /* background-position: 450px 115px; */
+}
+
+.navBox {
+    background-color: white;
+    padding: 2px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+}
+
+.navBox .navyImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-left: 20px; /* Adjust margin as needed */
+}
+
+.navBox .adcc {
+    color: #074880;
+    margin-right: auto; /* Set margin-right to auto to push it to the center */
+    margin-left: auto; /* Set margin-left to auto to center it horizontally */
+    font-size: 20px;
+    text-align: center; /* Align text content to center */
+}
+
+.navBox .adccImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-right: 20px; /* Adjust margin as needed */
+}
+
+.addinventoryform{
+    max-width: 400px;
+    height: auto;
+    margin: 100px auto;
+    padding: 40px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 150px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.heading{
+    color: black;
+    font-size: 20px;
+    margin-top: -40px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: black;
+    font-size: 16px;
+    text-align: left;
+}
+
+.input-group select {
+    display: block;
+    width: 410px;
+    height: 35px;
+    margin-bottom: 7px;
+    border-radius: 6px;
+    color: black;
+    font-size: 16px;
+    text-align: left;
+}
+
+.input-group input {
+    width: 98%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.input-group1 label {
+    display: block;
+    margin-bottom: 7px;
+    color: black;
+    font-size: 16px;
+    text-align: left;
+}
+
+.input-group1 input {
+    width: 98%;
+    padding: 8px;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 4px; */
+}
+
+.input-group2 label {
+    display: block;
+    margin-bottom: 7px;
+    color: black;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 30px;
+    margin-left: -50px;
+}
+
+.login-btn {
+    width: auto;
+    padding: 12px;
+    background: navy;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+}

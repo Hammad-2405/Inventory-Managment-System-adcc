@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/addinventory1.css">
+    <title>Allocate Inventory</title>
+</head>
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="images/navyLogo.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Allocate Inventory</h1></b></div>
+        <div class="adccImage">
+            <img src="images/navyLogo.png" alt="NavyLogo">
+        </div>
+    </div>
+
+    <section class="addinventoryform">
+        <div class="heading">
+            <h1><b>Enter Inventory Details</b></h1>
+        </div>
+        <form action="/allocateinv.html" method="post">
+
+            <div class="input-group">
+                <label for="project_id">Enter Project ID</label>
+                <input type="number" id="project_id" name="project_id" required>            
+            </div>
+
+            <div class="input-group">
+                <label for="item_name">Enter Item to Allocate</label>
+                <input type="text" id="item_name" name="item_name" required>            
+            </div>
+
+            <div class="input-group">
+                <label for="amount">Enter Amount of the Item</label>
+                <input type="number" id="amount" name="amount" required>            
+            </div>
+
+            <!-- <button type="submit" class="login-btn">Login</button> -->
+            <input type="submit" class="login-btn" value="Allocate Inventory">
+        </form>
+    </section>
+</body>
+</html>

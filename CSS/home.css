@@ -1,0 +1,97 @@
+body {
+    /* background-image: url('/images/navyImage1.png'); */
+    background-color: skyblue;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.navBox {
+    background-color: white;
+    padding: 2px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center; /* Vertically center items */
+}
+
+.navBox .navyImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-left: 20px; /* Adjust margin as needed */
+}
+
+.navBox .adcc {
+    color: #074880;
+    margin-right: auto; /* Set margin-right to auto to push it to the center */
+    margin-left: auto; /* Set margin-left to auto to center it horizontally */
+    font-size: 20px;
+    text-align: center; /* Align text content to center */
+}
+
+.navBox .adccImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-right: 20px; /* Adjust margin as needed */
+}
+
+.login-button {
+    background-color: #074880; /* Navy blue color */
+    color: #ffffff; /* White font color */
+    border: none; /* Remove the default border */
+    border-radius: 5px;
+    cursor: pointer; /* Change the cursor to a pointing hand on hover */
+    position: absolute; /* Position the button absolutely */
+    top: 50%; /* Vertically center the button */
+    margin-left: -180px;
+    padding: 10px 20px; /* Increase the padding to make the button larger */
+    font-size: 20px; /* Increase the font size to match the larger button */
+    margin-top: -22px;
+}
+
+.login-button:hover {
+background-color: #074880; /* Darken the blue color on hover */
+}
+
+.vision {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 100px;
+    padding: 20px;
+    max-width: 700px; /* Adjust maximum width as needed */
+    box-sizing: border-box; /* Include padding and border in the element's width and height */
+    position: relative; /* Create a relative positioning context for the text */
+    margin-left: auto; /* Set left margin to auto */
+    margin-right: auto; /* Set right margin to auto */
+}
+
+.mission {
+    text-align: center;
+    font-size: 20px;
+    margin-top: -40px;
+    padding: 20px;
+    max-width: 700px; /* Adjust maximum width as needed */
+    box-sizing: border-box; /* Include padding and border in the element's width and height */
+    position: relative; /* Create a relative positioning context for the text */
+    margin-left: auto; /* Set left margin to auto */
+    margin-right: auto; /* Set right margin to auto */
+}
+
+.commandments .duaImage{
+    margin-left: -120px;
+}
+
+.commandments {
+    text-align: center;
+    font-size: 20px;
+    margin-top: -40px;
+    padding: 20px;
+    max-width: 700px; /* Adjust maximum width as needed */
+    box-sizing: border-box; /* Include padding and border in the element's width and height */
+    position: relative; /* Create a relative positioning context for the text */
+    margin-left: auto; /* Set left margin to auto */
+    margin-right: auto; /* Set right margin to auto */
+}

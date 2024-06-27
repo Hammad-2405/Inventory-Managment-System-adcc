@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Vouchers</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: url('img/pic43.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            width: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 23px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        .addinventoryform {
+            max-width: 400px;
+            margin: 150px auto;
+            padding: 40px;
+            background: rgba(3, 15, 39, 0.8);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .heading {
+            color: white;
+            font-size: 20px;
+            margin-top: -40px;
+            font-family: 'Poppins';
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+            font-family: 'Poppins';
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: rgba(3, 15, 39, 0.8);
+            color: white;
+            font-family: 'Poppins';
+        }
+
+        .input-group select option {
+            background-color: rgba(3, 15, 39, 0.8);
+            color: white;
+        }
+
+        .input-group1 {
+            margin-bottom: 20px;
+        }
+
+        .input-group1 label {
+            display: block;
+            margin-bottom: 7px;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+            font-family: 'Poppins';
+        }
+
+        .input-group1 input {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: rgba(3, 15, 39, 0.8);
+            color: white;
+            font-family: 'Poppins';
+        }
+
+        .login-btn {
+            color: white;
+            border: 3px solid #ffffff;
+            font-weight: bold;
+            border-radius: 0;
+            background: rgba(3, 15, 39, 0.8);
+            font-family: 'Poppins';
+            padding: 10px;
+            width: 30%;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
+        .flash-message {
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .error-messages .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Generate Vouchers</b></h1></div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+    </div>
+
+    <section class="addinventoryform">
+        <div class="heading">
+            <h1><b>Enter Voucher Details</b></h1>
+        </div>
+
+        <% if (errorMessages && errorMessages.length > 0) { %>
+            <div class="error-messages">
+                <% errorMessages.forEach(message => { %>
+                    <div class="error-message flash-message"><%= message %></div>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <% if (successMessage && successMessage.length > 0) { %>
+            <div class="success-message flash-message"><%= successMessage %></div>
+        <% } %>
+        
+        <form action="/generatevouchers" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+                <label for="project_id">Enter Project ID</label>
+                <input type="text" id="project_id" name="project_id" required>
+            </div>
+            <div class="input-group">
+                <label for="voucher_date">Enter Voucher Date</label>
+                <input type="date" id="voucher_date" name="voucher_date" required>
+            </div>
+            <div class="input-group">
+                <label for="payment">Enter Total Payment</label>
+                <input type="number" id="payment" name="payment" required>
+            </div>
+            <div class="input-group">
+                <label for="received">Approved</label>
+                <select id="received" name="received" required>
+                    <option value="">Select an option</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="input-group1">
+                <label for="image">Upload Image</label>
+                <input type="file" id="image" name="image" required>
+            </div>
+            <input type="submit" class="login-btn" value="Submit">
+        </form>
+    </section>
+</body>
+</html>

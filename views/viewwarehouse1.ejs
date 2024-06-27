@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+            /* background: url('img/pic11.jpg') no-repeat center center fixed; */
+            background-color: bisque;
+            background-size: cover;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            /* Fixed height */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add subtle shadow for separation */
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            border-radius: 50%;
+            /* Make the background a circle */
+            padding: 10px;
+            /* Add padding to make the circle larger */
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            /* Set the height of the image */
+            width: 80px;
+            /* Set the width of the image */
+            border-radius: 50%;
+            /* Make the image a circle */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            /* Set margin-right to auto to push it to the center */
+            margin-left: auto;
+            /* Set margin-left to auto to center it horizontally */
+            font-size: 23px;
+            text-align: center;
+            /* Align text content to center */
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            /* border: 4px solid #ddd; */
+            border: 2px solid black;
+            padding: 8px;
+            text-align: left;
+            font-family: 'poppins';
+        }
+
+        th {
+            background-color: #fdbe33;
+            color: black;
+            font-size: 18px;
+        }
+
+        .details {
+            display: none;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .button-details {
+            background-color: #fdbe33;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none; /* Remove underlines */
+            display: inline-block; /* Make it inline-block for padding */
+            margin: 0; /* Reset margin */
+            font-family: 'poppins';
+            font-weight: bold;
+        }
+
+        .button-details:hover {
+            background-color: #d29000;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Warehouse 1</b></h1></div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="ADCCLogo">
+        </div>
+    </div>
+
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Project ID</th>
+                    <th>Project Name</th>
+                    <th>Project Budget</th>
+                    <th>Project Deadline</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% projects.forEach(project => { %>
+                    <tr>
+                        <td><%= project.project_id %></td>
+                        <td><%= project.project_name %></td>
+                        <td><%= project.project_budget %></td>
+                        <td><%= project.project_deadline %></td>
+                        <td><a href="/projectdetails-warehouse1/<%= project.project_id %>" class="button-details">Click for Details</a></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div id="details" class="details"></div>
+    </section>
+</body>
+</html>

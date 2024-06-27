@@ -1,0 +1,146 @@
+<!-- viewinventory.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse 1 Inventory Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: bisque;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: center; */
+            /* background: url('img/pic11.jpg') no-repeat center center fixed; */
+            background-color: bisque;
+            background-size: cover;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            /* Fixed height */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add subtle shadow for separation */
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            border-radius: 50%;
+            /* Make the background a circle */
+            padding: 10px;
+            /* Add padding to make the circle larger */
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            /* Set the height of the image */
+            width: 80px;
+            /* Set the width of the image */
+            border-radius: 50%;
+            /* Make the image a circle */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            /* Set margin-right to auto to push it to the center */
+            margin-left: auto;
+            /* Set margin-left to auto to center it horizontally */
+            font-size: 23px;
+            text-align: center;
+            /* Align text content to center */
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            /* border: 4px solid #ddd; */
+            border: 2px solid black;
+            padding: 8px;
+            text-align: left;
+            font-family: 'poppins';
+        }
+
+        th {
+            background-color: #fdbe33;
+            color: black;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Warehouse 3 Inventory</b></h1></div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="ADCCLogo">
+        </div>
+    </div>
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>S No</th>
+                    <th>Item</th>
+                    <th>Size</th>
+                    <th>Deno</th>
+                    <th>Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% inventory.forEach(item => { %>
+                    <tr>
+                        <td><%= item['S No'] %></td>
+                        <td><%= item['ITEM'] %></td>
+                        <td><%= item['Size'] %></td>
+                        <td><%= item['DENO'] %></td>
+                        <td><%= item['Qty Required'] %></td>
+                    </tr>
+                <% }); %>
+                
+            </tbody>
+        </table>
+    </section>
+</body>
+</html>

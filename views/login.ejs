@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url('img/c7.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navyImage, .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .navyImage img, .adccImage img {
+            height: 80px;
+            width: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 23px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        .login-container {
+            max-width: 400px;
+            height: 315px;
+            margin: 100px auto;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 220px;
+            background-color: rgba(253, 190, 51, 0.85);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #030f27;
+            font-size: 16px;
+            font-family: 'Poppins';
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-btn {
+            color: black;
+            border: 3px solid black;
+            font-weight: bold;
+            border-radius: 0;
+            background-color: #fdbe33;
+            font-family: 'poppins';
+            padding: 10px;
+            width: 20%;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            background: black;
+            color: #fdbe33;
+            border-color: black;
+        }
+
+        .logintext {
+            font-size: 18px;
+            margin-top: -15px;
+            color: #030f27;
+            font-weight: bold;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .flash-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc">
+            <h1><b>ADCC - South</b></h1>
+        </div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+    </div>
+    <div class="login-container">
+        <div class="login-form">
+            <div class="logintext">
+                <h1><b>Login</b></h1>
+            </div>
+            <% if (typeof errorMessage !== 'undefined') { %>
+                <% console.log('errorMessage:', errorMessage); %>
+                <div class="alert alert-danger" role="alert">
+                    <%= errorMessage %>
+                </div>
+            <% } %>
+            <form action="/login" method="post">
+                <div class="input-group">
+                    <label for="cnic">Enter Username (CNIC - No Dashes)</label>
+                    <input type="text" id="cnic" name="cnic" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Enter Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

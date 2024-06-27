@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= project.project_name %> Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: bisque;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            /* Fixed height */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add subtle shadow for separation */
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            border-radius: 50%;
+            /* Make the background a circle */
+            padding: 10px;
+            /* Add padding to make the circle larger */
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            /* Set the height of the image */
+            width: 80px;
+            /* Set the width of the image */
+            border-radius: 50%;
+            /* Make the image a circle */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            /* Set margin-right to auto to push it to the center */
+            margin-left: auto;
+            /* Set margin-left to auto to center it horizontally */
+            font-size: 23px;
+            text-align: center;
+            /* Align text content to center */
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+
+        section {
+            padding: 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        h2 {
+            color: black;
+            font-size: 40px;
+        }
+
+        .project-info {
+            margin-bottom: 20px;
+        }
+
+        .voucher-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .voucher-item {
+            
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            font-family: 'poppins';
+        }
+
+        .voucher-image {
+            max-width: 100px;
+            max-height: 100px;
+            cursor: pointer;
+        }
+
+        .project-info p{
+            font-size: 20px;
+        }
+
+        .project-info table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .project-info th,
+        .project-info td {
+            border: 2px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .project-info th {
+            background-color: #fdbe33;
+            color: black;
+            font-family: 'poppins';
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="/img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b><%= project.project_name %> Details</b></h1></div>
+        <div class="adccImage">
+            <img src="/img/pic2.png" alt="NavyLogo">
+        </div>
+    </div>
+    <section>
+        <div class="project-info">
+            <h2><i>Project Deadline</i></h2>
+            <p><%= project.project_deadline %></p>
+            <h2><i>Initial Approved Budget</i></h2>
+            <p><%= project.project_budget %></p>
+            <h2><i>Total Spent So Far</i></h2>
+            <p><%= totalSpent %></p>
+
+        </div>
+        <div>
+            <div>
+                <h2><i>Voucher Details</i></h2>
+                <div class="project-info">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Issue Date</th>
+                                <th>Voucher</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% vouchers.forEach(voucher => { %>
+                                <tr>
+                                    <td><%= voucher.voucher_issue_date ? new Date(voucher.voucher_issue_date).toLocaleDateString() : 'N/A' %></td>
+                                    <td>
+                                        <a href="/temp/<%= voucher.image.split('temp_')[1] %>" target="_blank">
+                                            <img src="/temp/<%= voucher.image.split('temp_')[1] %>" alt="Voucher Image" class="voucher-image">
+                                        </a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

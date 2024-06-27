@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Projects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('img/pic43.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            width: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 23px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .addinventoryform {
+            max-width: 400px;
+            margin: 150px auto;
+            padding: 40px;
+            background: rgba(3, 15, 39, 0.8);
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+        }
+
+        .heading {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 16px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .login-btn,
+        .add-field-btn {
+            color: white;
+            background: rgba(3, 15, 39, 0.8);
+            border: 3px solid #ffffff;
+            font-weight: bold;
+            border-radius: 0;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .login-btn:hover,
+        .add-field-btn:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+
+        .add-field-btn {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .error-messages .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc">
+            <h1><b>Add Projects</b></h1>
+        </div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+    </div>
+
+    <section class="addinventoryform">
+        <div class="heading">
+            <h1><b>Enter Project Details</b></h1>
+        </div>
+
+        <% if (errorMessages && errorMessages.length > 0) { %>
+            <div class="error-messages">
+                <% errorMessages.forEach(message => { %>
+                    <div class="error-message flash-message"><%= message %></div>
+                <% }); %>
+            </div>
+        <% } %>
+
+        <% if (successMessage && successMessage.length > 0) { %>
+            <div class="success-message flash-message"><%= successMessage %></div>
+        <% } %>
+
+        <form id="projectForm" action="/addprojects" method="POST">
+            <div class="input-group">
+                <label for="projectName">Project Name</label>
+                <input type="text" id="projectName" name="projectName" placeholder="Project Name" required>
+            </div>
+            <div class="input-group">
+                <label for="warehouseId">Warehouse ID</label>
+                <input type="text" id="warehouseId" name="warehouseId" placeholder="Warehouse ID" required>
+            </div>
+            <div class="input-group">
+                <label for="projectBudget">Project Budget</label>
+                <input type="number" id="projectBudget" name="projectBudget" placeholder="Project Budget" required>
+            </div>
+            <div class="input-group">
+                <label for="projectDeadline">Project Deadline</label>
+                <input type="date" id="projectDeadline" name="projectDeadline" placeholder="Project Deadline" required>
+            </div>
+            <div id="additionalFields"></div>
+            <button type="button" class="add-field-btn" onclick="addFields()">Add BOQ For Project</button>
+            <input type="submit" value="Submit" class="login-btn">
+        </form>
+
+        <script>
+            function addFields() {
+                const container = document.getElementById('additionalFields');
+                const fields = ['Item Name', 'Size', 'Deno', 'Limit'];
+
+                fields.forEach(fieldName => {
+                    const fieldWrapper = document.createElement('div');
+                    fieldWrapper.classList.add('input-group');
+
+                    const label = document.createElement('label');
+                    label.textContent = fieldName;
+                    fieldWrapper.appendChild(label);
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.name = fieldName.toLowerCase().replace(' ', '_');
+                    input.placeholder = fieldName;
+                    fieldWrapper.appendChild(input);
+
+                    container.appendChild(fieldWrapper);
+                });
+            }
+        </script>
+    </section>
+</body>
+
+
+</html>

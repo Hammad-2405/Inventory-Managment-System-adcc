@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('img/pic43.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            /* Fixed height */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add subtle shadow for separation */
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            border-radius: 50%;
+            /* Make the background a circle */
+            padding: 10px;
+            /* Add padding to make the circle larger */
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            /* Set the height of the image */
+            width: 80px;
+            /* Set the width of the image */
+            border-radius: 50%;
+            /* Make the image a circle */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            /* Set margin-right to auto to push it to the center */
+            margin-left: auto;
+            /* Set margin-left to auto to center it horizontally */
+            font-size: 23px;
+            text-align: center;
+            /* Align text content to center */
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        .addinventoryform {
+            max-width: 400px;
+            height: auto;
+            margin: 100px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 150px;
+            background: rgba(3, 15, 39, 0.8);
+        }
+
+        .heading {
+            color: white;
+            font-size: 20px;
+            margin-top: -40px;
+            font-family: 'poppins';
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+            font-family: 'poppins';
+        }
+
+        .input-group select {
+            display: block;
+            width: 410px;
+            height: 35px;
+            margin-bottom: 7px;
+            border-radius: 6px;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .login-btn {
+
+            color: white;
+            border: 3px solid #ffffff;
+            font-weight: bold;
+            border-radius: 0;
+            background: rgba(3, 15, 39, 0.8);
+            font-family: 'poppins';
+            padding: 10px;
+            width: 40%;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .login-btn:hover {
+            background: white;
+            /* Change to a slightly lighter shade of navy */
+            color: black;
+            border-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Add User</b></h1></div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+    </div>
+
+    <section class="addinventoryform">
+        <div class="heading">
+            <h1><b>Enter User Details</b></h1>
+        </div>
+        <% if (typeof errorMessage !== 'undefined') { %>
+            <% console.log('errorMessage:', errorMessage); %>
+            <div class="alert alert-danger" role="alert">
+                <%= errorMessage %>
+            </div>
+        <% } %>
+        <form action="/adduser" method="post">
+            <div class="input-group">
+                <label for="username">Enter Username (CNIC - No Dashes)</label>
+                <input type="text" id="cnic" name="cnic" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Enter User Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <input type="submit" class="login-btn" value="Add User">
+        </form>
+    </section>
+</body>
+</html>

@@ -1,0 +1,85 @@
+body {
+    background-image: url('/images/navyImage.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.navBox {
+    background-color: white;
+    padding: 2px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center; /* Vertically center items */
+}
+
+.navBox .navyImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-left: 20px; /* Adjust margin as needed */
+}
+
+.navBox .adcc {
+    color: #074880;
+    margin-right: auto; /* Set margin-right to auto to push it to the center */
+    margin-left: auto; /* Set margin-left to auto to center it horizontally */
+    font-size: 20px;
+    text-align: center; /* Align text content to center */
+}
+
+.navBox .adccImage img {
+    height: 100%; /* Set the height of the image to 100% of its container */
+    max-height: 100px; /* Set maximum height if needed */
+    margin-right: 20px; /* Adjust margin as needed */
+}
+
+.login-container {
+    max-width: 400px;
+    height: 300px;
+    margin: 100px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 220px;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: black;
+    font-size: 16px;
+    text-align: left;
+}
+
+.input-group input {
+    width: 98%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.login-btn {
+    width: 20%;
+    padding: 12px;
+    background: navy;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.logintext{
+    font-size: 20px;
+    margin-top: -15px;
+}

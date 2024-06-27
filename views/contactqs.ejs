@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Notifications</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        header {
+            background-color: darkblue;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: blue;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            padding: 10px;
+            margin: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: darkblue;
+            color: #fff;
+        }
+
+        button {
+            background-color: blue;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Store Notifications</h1>
+    </header>
+    <nav>
+        <a href="/storedashboard.html">Go Back</a>
+    </nav>
+    <section>
+        <form id="notificationForm" action="/markasread_not_store" method="POST">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Select</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% notifications.forEach(notification => { %>
+                        <tr>
+                            <td><%= notification.message %></td>
+                            <td><%= notification.read ? 'Read' : 'Unread' %></td>
+                            <td>
+                                <input type="checkbox" name="readMessages" value="<%= notification.sno %>">
+                            </td>
+                            <td><button type="button" onclick="contactQS('<%= notification.sno %>')">Contact QS</button></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <button type="submit">Mark Selected as Read</button>
+        </form>
+    </section>
+    <script>
+        function contactQS(sno) {
+            // Logic to contact QS, can be a form submission, alert or any other logic
+            alert(`Contacting QS for notification: ${sno}`);
+            // Example: 
+            // document.getElementById(`contactForm${sno}`).submit();
+        }
+    </script>
+</body>
+
+</html>

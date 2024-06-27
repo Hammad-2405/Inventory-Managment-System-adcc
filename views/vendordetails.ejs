@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-color: bisque;
+            background-size: cover;
+        }
+
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            width: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .adcc {
+            color: white;
+            margin-right: auto;
+            margin-left: auto;
+            font-size: 23px;
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 2px solid black;
+            padding: 8px;
+            text-align: left;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        th {
+            background-color: #fdbe33;
+            color: black;
+            font-size: 18px;
+        }
+
+        .button-details {
+            background-color: #fdbe33;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .button-details:hover {
+            background-color: #d29000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navBox">
+        <div class="navyImage">
+            <img src="img/pic2.png" alt="NavyLogo">
+        </div>
+        <div class="adcc"><h1><b>Vendor Details</b></h1></div>
+        <div class="adccImage">
+            <img src="img/pic2.png" alt="ADCCLogo">
+        </div>
+    </div>
+    <section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Vendor ID</th>
+                    <th>Vendor Name</th>
+                    <th>Contact</th>
+                    <th>CNIC</th>
+                    <th>Works On</th>
+                    <th>Project ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% vendors.forEach(vendor => { %>
+                    <tr>
+                        <td><%= vendor.vendor_id %></td>
+                        <td><%= vendor.vendor_name %></td>
+                        <td><%= vendor.contact %></td>
+                        <td><%= vendor.cnic %></td>
+                        <td><%= vendor.works_on %></td>
+                        <td><%= vendor.project_id %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>

@@ -1,0 +1,31 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+header {
+    background-color: darkblue;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+nav {
+    background-color: blue;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    padding: 10px;
+    margin: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+}
+
+section {
+    padding: 20px;
+}

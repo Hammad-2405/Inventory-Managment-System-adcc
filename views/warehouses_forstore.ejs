@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+        }
+
+        header {
+            background-color: darkblue;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: blue;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            padding: 10px;
+            margin: 10px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: darkblue;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>SELECT WAREHOUSES FOR INVENTORY</h1>
+    </header>
+    <nav>
+        <a href="viewinventory1">Warehouse 1</a>
+        <a href="viewinventory2">Warehouse 2</a>
+        <a href="viewinventory3">Warehouse 3</a>
+        <a href="/storedashboard.html">Go Back</a>
+    </nav>
+    <section>
+        <!-- Warehouses content will be dynamically generated here -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Warehouse ID</th>
+                    <th>Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% warehouses.forEach(warehouse=> { %>
+                    <tr>
+                        <td>
+                            <%= warehouse.warehouse_id %>
+                        </td>
+                        <td>
+                            <%= warehouse.warehouse_location %>
+                        </td>
+                    </tr>
+                    <% }); %>
+            </tbody>
+        </table>
+    </section>
+</body>
+
+</html>

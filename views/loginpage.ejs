@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/CSS/loginstyle.css">
+    <style>
+        .header-bar {
+            background-color: navy; /* Dark blue background color */
+            padding: 10px 0; /* Added padding for spacing */
+            text-align: center; /* Center align text */
+            position: relative; /* Add position relative to allow absolute positioning */
+        }
+
+        .header-img {
+            position: absolute; /* Position the image absolutely */
+            top: 50%; /* Move the image to the middle vertically */
+            left: 10px; /* Position the image to the right */
+            transform: translateY(-50%); /* Center the image vertically */
+            max-width: 100px; /* Adjust max width as needed */
+        }
+
+        .heading {
+            color: white; /* White text color */
+            font-size: 36px;
+            margin: 0; /* Remove default margin */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Add text shadow for better visibility */
+            position: relative; /* Ensure z-index works properly */
+            z-index: 1; /* Ensure the heading is above the image */
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto; /* Adjusted margin */
+            padding: 20px;
+            background: #cfe8ff; /* Light blue background color */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form {
+            margin-top: 20px; /* Adjusted margin */
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #666;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .input-group input {
+            width: calc(100% - 22px); /* Adjusted input width */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 10px;
+            background: navy;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #001a4d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-bar">
+        <img src="/img/Pakistan-navy-logo.jpg" alt="logo" class="header-img">
+        <h1 class="heading">ADCC</h1>
+    </div>
+
+    <div class="login-container">
+        <div class="login-form">
+            <h2>Login</h2>
+            
+            <!-- Flash error message section -->
+            <% if (errorMessage) { %>
+                <div class="error-message">
+                    <%= errorMessage %>
+                </div>
+            <% } %>
+            
+            <form action="/loginpage" method="post">
+                <div class="input-group">
+                    <label for="username">Enter Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Enter Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
