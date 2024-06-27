@@ -29,7 +29,7 @@ app.use('/temp', express.static('temp'));
 
 const pool = new Pool({
   user: 'postgres',
-  host: 'localhost',
+  host: '0.0.0.0',
   database: 'Inventory-Database',
   password: 'hammad2405',
   port: 5432,
@@ -2198,6 +2198,6 @@ app.post('/sharevendordetails', async (req, res) => {
 
 
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Server running on port ${port}`);
 });
