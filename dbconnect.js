@@ -33,6 +33,9 @@ const pool = new Pool({
   database: 'adcc_south_db',
   password: 'lyTGgs4y5MK3an2Wjk8gYkmSmyPCet82',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Create a new client
@@ -42,6 +45,9 @@ const client = new Client({
   database: 'adcc_south_db',
   password: 'lyTGgs4y5MK3an2Wjk8gYkmSmyPCet82',
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
 // Connect to the PostgreSQL server
