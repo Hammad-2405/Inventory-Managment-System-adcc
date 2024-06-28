@@ -28,19 +28,19 @@ app.use('/temp', express.static('temp'));
 
 
 const pool = new Pool({
-  user: 'postgres',
-  host: '0.0.0.0',
-  database: 'Inventory-Database',
-  password: 'hammad2405',
+  user: 'adcc_south_db_user',
+  host: 'dpg-cpuq6caj1k6c738fpo4g-a.singapore-postgres.render.com',
+  database: 'adcc_south_db',
+  password: 'lyTGgs4y5MK3an2Wjk8gYkmSmyPCet82',
   port: 5432,
 });
 
 // Create a new client
 const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'Inventory-Database',
-  password: 'hammad2405',
+  user: 'adcc_south_db_user',
+  host: 'dpg-cpuq6caj1k6c738fpo4g-a.singapore-postgres.render.com',
+  database: 'adcc_south_db',
+  password: 'lyTGgs4y5MK3an2Wjk8gYkmSmyPCet82',
   port: 5432,
 });
 
