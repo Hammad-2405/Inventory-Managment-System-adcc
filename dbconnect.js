@@ -8,12 +8,26 @@ const port = 3000;
 const { Pool, Client } = require('pg');
 const multer = require('multer');
 const upload = multer();
+const crypto = require('crypto');
+
+function encryptCNIC(cnic) {
+  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from('123789456987654321'), Buffer.from('1111111111156459'));
+  let encrypted = cipher.update(cnic, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
 
 app.use(session({
-  secret: 'your_secret_key',
+  secret: '123789456987654321',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // set to true if using HTTPS
+    httpOnly: true,
+    maxAge: 240000 // Session expiration time in milliseconds
+  }
 }));
+
 app.use(flash());
 app.use(express.urlencoded({ extended: true })); // Use built-in body parser
 app.use('/css', express.static(path.join(__dirname, 'css')));
@@ -37,6 +51,14 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
+
+// const pool = new Pool({
+//   user: 'postgres',
+//   host: 'localhost',
+//   database: 'Inventory-Database',
+//   password: 'hammad2405',
+//   port: 5432,
+// });
 
 // Create a new client
 const client = new Client({
@@ -73,6 +95,41 @@ function saveImage(data) {
 function deleteFile(filePath) {
   fs.unlinkSync(filePath);
 }
+
+// Middleware to check if the user is authenticated
+function checkAuthenticated(req, res, next) {
+  if (req.session.user) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
+// Middleware to prevent authenticated users from accessing the login page
+function checkNotAuthenticated(req, res, next) {
+  if (req.session.user) {
+    const role = req.session.user.cnic;
+    switch (role) {
+      case '1111111111111':
+        return res.redirect('/ceodashboard.html');
+      case '2222222222222':
+        return res.redirect('/qsdashboard.html');
+      case '3333333333333':
+        return res.redirect('/findashboard.html');
+      case '4444444444444':
+        return res.redirect('/storedashboard.html');
+      case '5555555555555':
+        return res.redirect('/warehouse1.html');
+      case '6666666666666':
+        return res.redirect('/warehouse2.html');
+      case '7777777777777':
+        return res.redirect('/warehouse3.html');
+      default:
+        return res.send('Unknown role.');
+    }
+  }
+  next();
+}
+
 
 
 //   const createDatabaseQuery = `
@@ -557,24 +614,24 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/login', (req, res) => {
+app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs', { errorMessage: undefined });
 });
 
 
-app.get('/ceodashboard.html', (req, res) => {
+app.get('/ceodashboard.html', checkAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'ceodashboard.html'));
 });
 
-app.get('/storedashboard.html', (req, res) => {
+app.get('/storedashboard.html', checkAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'storedashboard.html'));
 });
 
-app.get('/viewwarehouses-for-inventory.html', (req, res) => {
+app.get('/viewwarehouses-for-inventory.html', checkAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'viewwarehouses-for-inventory.html'));
 });
 
-app.get('/viewwarehouses', async (req, res) => {
+app.get('/viewwarehouses', checkAuthenticated, async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -588,7 +645,7 @@ app.get('/viewwarehouses', async (req, res) => {
   }
 });
 
-app.get('/warehouses_forstore', async (req, res) => {
+app.get('/warehouses_forstore', checkAuthenticated, async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -602,7 +659,7 @@ app.get('/warehouses_forstore', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouses-fromfinance', async (req, res) => {
+app.get('/viewwarehouses-fromfinance', checkAuthenticated, async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -616,7 +673,7 @@ app.get('/viewwarehouses-fromfinance', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouses-fromstore', async (req, res) => {
+app.get('/viewwarehouses-fromstore', checkAuthenticated, async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -630,7 +687,7 @@ app.get('/viewwarehouses-fromstore', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse1', async (req, res) => {
+app.get('/viewwarehouse1', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -644,7 +701,7 @@ app.get('/viewwarehouse1', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse1-others', async (req, res) => {
+app.get('/viewwarehouse1-others', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -658,7 +715,7 @@ app.get('/viewwarehouse1-others', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse2', async (req, res) => {
+app.get('/viewwarehouse2',checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 2 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -672,7 +729,7 @@ app.get('/viewwarehouse2', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse2-others', async (req, res) => {
+app.get('/viewwarehouse2-others', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -686,7 +743,7 @@ app.get('/viewwarehouse2-others', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse3', async (req, res) => {
+app.get('/viewwarehouse3', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 3 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -700,7 +757,7 @@ app.get('/viewwarehouse3', async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse3-others', async (req, res) => {
+app.get('/viewwarehouse3-others', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -714,7 +771,7 @@ app.get('/viewwarehouse3-others', async (req, res) => {
   }
 });
 
-app.get('/viewprojects1', async (req, res) => {
+app.get('/viewprojects1', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -728,7 +785,7 @@ app.get('/viewprojects1', async (req, res) => {
   }
 });
 
-app.get('/viewprojects2', async (req, res) => {
+app.get('/viewprojects2', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -742,7 +799,7 @@ app.get('/viewprojects2', async (req, res) => {
   }
 });
 
-app.get('/viewprojects3', async (req, res) => {
+app.get('/viewprojects3', checkAuthenticated, async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -756,7 +813,7 @@ app.get('/viewprojects3', async (req, res) => {
   }
 });
 
-app.get('/viewvendors', async (req, res) => {
+app.get('/viewvendors', checkAuthenticated, async (req, res) => {
   const { projectId } = req.params;
   try {
       const result = await pool.query('SELECT * FROM vendors');
@@ -771,7 +828,7 @@ app.get('/viewvendors', async (req, res) => {
 });
 
 
-app.get('/viewfinance', async (req, res) => {
+app.get('/viewfinance', checkAuthenticated, async (req, res) => {
   try {
     // Fetch all vouchers from the database
     const result = await pool.query('SELECT * FROM vouchers');
@@ -793,7 +850,7 @@ app.get('/viewfinance', async (req, res) => {
   }
 });
 
-app.get('/notceo', async (req, res) => {
+app.get('/notceo', checkAuthenticated, async (req, res) => {
   try {
     // Fetch messages from the notifications table
     const result = await pool.query('SELECT * FROM notifications WHERE read = false');
@@ -807,7 +864,7 @@ app.get('/notceo', async (req, res) => {
   }
 });
 
-app.get('/notqs', async (req, res) => {
+app.get('/notqs', checkAuthenticated, async (req, res) => {
   try {
     // Fetch messages from the notifications table
     const result = await pool.query('SELECT * FROM notifications_qs WHERE read = false');
@@ -1355,25 +1412,25 @@ app.post('/login', async (req, res) => {
       // Redirect the user based on their role
       switch (role) {
         case '1111111111111':
-          res.redirect(`/ceodashboard.html?cnic=${user.cnic}`);
+          res.redirect(`/ceodashboard.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '2222222222222':
-          res.redirect(`/qsdashboard.html?cnic=${user.cnic}`);
+          res.redirect(`/qsdashboard.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '3333333333333':
-          res.redirect(`/findashboard.html?cnic=${user.cnic}`);
+          res.redirect(`/findashboard.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '4444444444444':
-          res.redirect(`/storedashboard.html?cnic=${user.cnic}`);
+          res.redirect(`/storedashboard.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '5555555555555':
-          res.redirect(`/warehouse1.html?cnic=${user.cnic}`);
+          res.redirect(`/warehouse1.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '6666666666666':
-          res.redirect(`/warehouse2.html?cnic=${user.cnic}`);
+          res.redirect(`/warehouse2.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         case '7777777777777':
-          res.redirect(`/warehouse3.html?cnic=${user.cnic}`);
+          res.redirect(`/warehouse3.html?cnic=${encodeURIComponent(encryptCNIC)}`);
           break;
         default:
           res.send('Unknown role.');
@@ -2202,6 +2259,43 @@ app.post('/sharevendordetails', async (req, res) => {
   }
 });
 
+app.post('/logout', (req, res) => {
+  const userRole = req.session.user ? req.session.user.cnic : null;
+  
+  req.session.destroy(err => {
+    if (err) {
+      return res.redirect('/dashboard'); // or any default page if session destruction fails
+    }
+    res.clearCookie('connect.sid');
+
+    // Redirect based on the user's role
+    switch (userRole) {
+      case '1111111111111':
+        res.redirect('/login?role=ceo');
+        break;
+      case '2222222222222':
+        res.redirect('/login?role=qs');
+        break;
+      case '3333333333333':
+        res.redirect('/login?role=fin');
+        break;
+      case '4444444444444':
+        res.redirect('/login?role=store');
+        break;
+      case '5555555555555':
+        res.redirect('/login?role=warehouse1');
+        break;
+      case '6666666666666':
+        res.redirect('/login?role=warehouse2');
+        break;
+      case '7777777777777':
+        res.redirect('/login?role=warehouse3');
+        break;
+      default:
+        res.redirect('/login'); // Default login page for unknown roles
+    }
+  });
+});
 
 
 app.listen(port, '0.0.0.0', () => {

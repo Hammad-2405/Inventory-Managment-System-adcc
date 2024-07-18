@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +12,6 @@
             padding: 0;
             background-color: bisque;
         }
-
         .navBox {
             background-color: #030f27;
             width: 100%;
@@ -26,24 +24,19 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        .navyImage,
-        .adccImage {
+        .navyImage, .adccImage {
             background-color: white;
             display: flex;
             align-items: center;
             border-radius: 50%;
             padding: 10px;
         }
-
-        .navyImage img,
-        .adccImage img {
+        .navyImage img, .adccImage img {
             height: 80px;
             width: 80px;
             border-radius: 50%;
             object-fit: cover;
         }
-
         .adcc {
             color: white;
             margin-right: auto;
@@ -53,13 +46,11 @@
             font-family: 'Poppins', sans-serif;
             font-weight: bold;
         }
-
         form {
             padding: 20px;
             text-align: center;
             margin-top: 80px;
         }
-
         input[type="submit"] {
             background-color: #fdbe33;
             color: black;
@@ -75,26 +66,21 @@
             font-size: 18px;
             margin-top: 20px;
         }
-
         input[type="submit"]:hover {
             background-color: #d29000;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
-        th,
-        td {
+        th, td {
             border: 2px solid black;
             padding: 8px;
             text-align: left;
             font-family: 'Poppins', sans-serif;
             font-weight: bold;
         }
-
         th {
             background-color: #fdbe33;
             color: black;
@@ -107,20 +93,18 @@
             padding: 8px 16px;
             cursor: pointer;
             transition: background-color 0.3s;
-            text-decoration: none; /* Remove underlines */
-            display: inline-block; /* Make it inline-block for padding */
-            margin: 0; /* Reset margin */
-            font-family: 'poppins';
+            text-decoration: none;
+            display: inline-block;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
             font-weight: bold;
             margin-top: 20px;
         }
-
         button:hover {
             background-color: #d29000;
         }
     </style>
 </head>
-
 <body>
     <div class="navBox">
         <div class="navyImage">
@@ -133,7 +117,6 @@
             <img src="img/pic2.png" alt="ADCC Logo">
         </div>
     </div>
-
     <section>
         <form action="/addinventory1" method="get">
             <table>
@@ -145,17 +128,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% items.forEach(item=> { %>
+                    <% items.forEach(item => { %>
                     <tr>
+                        <td><%= item.item %></td>
+                        <td><%= item.date_received %></td>
                         <td>
-                            <%= item.item %>
-                        </td>
-                        <td>
-                            <%= item.date_received %>
-                        </td>
-                        <td>
-                            <% if ((new Date(item.date_received).toLocaleDateString('en-GB')===new
-                                Date(currentDate).toLocaleDateString('en-GB')) || item.approved===true) { %>
+                            <% if ((new Date(item.date_received).toLocaleDateString('en-GB') === new Date(currentDate).toLocaleDateString('en-GB')) || item.approved === true) { %>
                             <button class="add-button" name="selectedItems" value="<%= item.id %>">Add to Inventory</button>
                             <% } %>
                         </td>
@@ -166,5 +144,4 @@
         </form>
     </section>
 </body>
-
 </html>
