@@ -96,41 +96,6 @@ function deleteFile(filePath) {
   fs.unlinkSync(filePath);
 }
 
-// Middleware to check if the user is authenticated
-function checkAuthenticated(req, res, next) {
-  if (req.session.user) {
-    return next();
-  }
-  res.redirect('/login');
-}
-
-// Middleware to prevent authenticated users from accessing the login page
-function checkNotAuthenticated(req, res, next) {
-  if (req.session.user) {
-    const role = req.session.user.cnic;
-    switch (role) {
-      case '1111111111111':
-        return res.redirect('/ceodashboard.html');
-      case '2222222222222':
-        return res.redirect('/qsdashboard.html');
-      case '3333333333333':
-        return res.redirect('/findashboard.html');
-      case '4444444444444':
-        return res.redirect('/storedashboard.html');
-      case '5555555555555':
-        return res.redirect('/warehouse1.html');
-      case '6666666666666':
-        return res.redirect('/warehouse2.html');
-      case '7777777777777':
-        return res.redirect('/warehouse3.html');
-      default:
-        return res.send('Unknown role.');
-    }
-  }
-  next();
-}
-
-
 
 //   const createDatabaseQuery = `
 //   CREATE DATABASE "Inventory-Database";
@@ -614,24 +579,24 @@ app.get('/', (req, res) => {
 });
 
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login', (req, res) => {
   res.render('login.ejs', { errorMessage: undefined });
 });
 
 
-app.get('/ceodashboard.html', checkAuthenticated, (req, res) => {
+app.get('/ceodashboard.html',  (req, res) => {
   res.sendFile(path.join(__dirname, 'ceodashboard.html'));
 });
 
-app.get('/storedashboard.html', checkAuthenticated, (req, res) => {
+app.get('/storedashboard.html',  (req, res) => {
   res.sendFile(path.join(__dirname, 'storedashboard.html'));
 });
 
-app.get('/viewwarehouses-for-inventory.html', checkAuthenticated, (req, res) => {
+app.get('/viewwarehouses-for-inventory.html',  (req, res) => {
   res.sendFile(path.join(__dirname, 'viewwarehouses-for-inventory.html'));
 });
 
-app.get('/viewwarehouses', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouses',  async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -645,7 +610,7 @@ app.get('/viewwarehouses', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/warehouses_forstore', checkAuthenticated, async (req, res) => {
+app.get('/warehouses_forstore',  async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -659,7 +624,7 @@ app.get('/warehouses_forstore', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouses-fromfinance', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouses-fromfinance',  async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -673,7 +638,7 @@ app.get('/viewwarehouses-fromfinance', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouses-fromstore', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouses-fromstore',  async (req, res) => {
   try {
     // Fetch warehouses from the database
     const result = await pool.query('SELECT * FROM warehouses');
@@ -687,7 +652,7 @@ app.get('/viewwarehouses-fromstore', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse1', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse1',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -701,7 +666,7 @@ app.get('/viewwarehouse1', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse1-others', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse1-others',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -715,7 +680,7 @@ app.get('/viewwarehouse1-others', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse2',checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse2', async (req, res) => {
   try {
     // Fetch projects of Warehouse 2 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -729,7 +694,7 @@ app.get('/viewwarehouse2',checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse2-others', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse2-others',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -743,7 +708,7 @@ app.get('/viewwarehouse2-others', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse3', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse3',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 3 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -757,7 +722,7 @@ app.get('/viewwarehouse3', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewwarehouse3-others', checkAuthenticated, async (req, res) => {
+app.get('/viewwarehouse3-others',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -771,7 +736,7 @@ app.get('/viewwarehouse3-others', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewprojects1', checkAuthenticated, async (req, res) => {
+app.get('/viewprojects1',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 1');
@@ -785,7 +750,7 @@ app.get('/viewprojects1', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewprojects2', checkAuthenticated, async (req, res) => {
+app.get('/viewprojects2',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 2');
@@ -799,7 +764,7 @@ app.get('/viewprojects2', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewprojects3', checkAuthenticated, async (req, res) => {
+app.get('/viewprojects3',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
     const result = await pool.query('SELECT * FROM projects WHERE warehouse_id = 3');
@@ -813,7 +778,7 @@ app.get('/viewprojects3', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/viewvendors', checkAuthenticated, async (req, res) => {
+app.get('/viewvendors',  async (req, res) => {
   const { projectId } = req.params;
   try {
       const result = await pool.query('SELECT * FROM vendors');
@@ -828,7 +793,7 @@ app.get('/viewvendors', checkAuthenticated, async (req, res) => {
 });
 
 
-app.get('/viewfinance', checkAuthenticated, async (req, res) => {
+app.get('/viewfinance',  async (req, res) => {
   try {
     // Fetch all vouchers from the database
     const result = await pool.query('SELECT * FROM vouchers');
@@ -850,7 +815,7 @@ app.get('/viewfinance', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/notceo', checkAuthenticated, async (req, res) => {
+app.get('/notceo',  async (req, res) => {
   try {
     // Fetch messages from the notifications table
     const result = await pool.query('SELECT * FROM notifications WHERE read = false');
@@ -864,7 +829,7 @@ app.get('/notceo', checkAuthenticated, async (req, res) => {
   }
 });
 
-app.get('/notqs', checkAuthenticated, async (req, res) => {
+app.get('/notqs',  async (req, res) => {
   try {
     // Fetch messages from the notifications table
     const result = await pool.query('SELECT * FROM notifications_qs WHERE read = false');
