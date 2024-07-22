@@ -1172,19 +1172,25 @@ app.get('/beforeinventoryadd1', async (req, res) => {
     const currentDate = new Date().toISOString().split('T')[0];
     // Fetch items from the database table receivings
     const result = await pool.query('SELECT * FROM receivings WHERE warehouse_id = 1');
-    const items = result.rows;
+    //const items = result.rows;
 
     // Check if items' date_received is not equal to currentDate
-    items.forEach(async (item) => {
-      const receivedDate = item.date_received.toISOString().split('T')[0];
-      if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
-        // If not equal, insert notification into the notifications table
-        await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 1]);
-      }
-    });
+    // items.forEach(async (item) => {
+    //   const receivedDate = item.date_received.toISOString().split('T')[0];
+    //   // if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
+    //   //   // If not equal, insert notification into the notifications table
+    //   //   await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 1]);
+    //   // }
+    // });
+    const items = result.rows.map(item1 => ({
+      item_name: item1.item,
+      date_received: item1.date_received,
+      size: item1.Size,
+      image: saveImage(item1.PO)
+    }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd1', { items: items, currentDate: currentDate });
+    res.render('beforeinventoryadd1', { items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -1198,19 +1204,25 @@ app.get('/beforeinventoryadd2', async (req, res) => {
     const currentDate = new Date().toISOString().split('T')[0];
     // Fetch items from the database table receivings
     const result = await pool.query('SELECT * FROM receivings WHERE warehouse_id = 2');
-    const items = result.rows;
+    //const items = result.rows;
 
     // Check if items' date_received is not equal to currentDate
-    items.forEach(async (item) => {
-      const receivedDate = item.date_received.toISOString().split('T')[0];
-      if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
-        // If not equal, insert notification into the notifications table
-        await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 2]);
-      }
-    });
+    // items.forEach(async (item) => {
+    //   const receivedDate = item.date_received.toISOString().split('T')[0];
+    //   // if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
+    //   //   // If not equal, insert notification into the notifications table
+    //   //   await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 1]);
+    //   // }
+    // });
+    const items = result.rows.map(item1 => ({
+      item_name: item1.item,
+      date_received: item1.date_received,
+      size: item1.Size,
+      image: saveImage(item1.PO)
+    }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd2', { items: items, currentDate: currentDate });
+    res.render('beforeinventoryadd2', { items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -1224,19 +1236,25 @@ app.get('/beforeinventoryadd3', async (req, res) => {
     const currentDate = new Date().toISOString().split('T')[0];
     // Fetch items from the database table receivings
     const result = await pool.query('SELECT * FROM receivings WHERE warehouse_id = 3');
-    const items = result.rows;
+    //const items = result.rows;
 
     // Check if items' date_received is not equal to currentDate
-    items.forEach(async (item) => {
-      const receivedDate = item.date_received.toISOString().split('T')[0];
-      if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
-        // If not equal, insert notification into the notifications table
-        await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 3]);
-      }
-    });
+    // items.forEach(async (item) => {
+    //   const receivedDate = item.date_received.toISOString().split('T')[0];
+    //   // if (new Date(item.date_received).toLocaleDateString('en-GB') !== new Date(currentDate).toLocaleDateString('en-GB')) {
+    //   //   // If not equal, insert notification into the notifications table
+    //   //   await pool.query('INSERT INTO notifications (message, read, warehouse_id) VALUES ($1, $2, $3)', [`Inventory "${item.item}" not added on the same day it was received.`, false, 1]);
+    //   // }
+    // });
+    const items = result.rows.map(item1 => ({
+      item_name: item1.item,
+      date_received: item1.date_received,
+      size: item1.Size,
+      image: saveImage(item1.PO)
+    }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd3', { items: items, currentDate: currentDate });
+    res.render('beforeinventoryadd3', { items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -2088,8 +2106,9 @@ app.post('/updateboq', async (req, res) => {
   }
 });
 
-app.post('/receivinginventory.html', async (req, res) => {
-  const { item_name, receiving_date, warehouse } = req.body;
+app.post('/receivinginventory.html', upload.single('image'), async (req, res) => {
+  const { item_name, receiving_date, warehouse, size, quantity } = req.body;
+  const image = req.file ? req.file.buffer : null;
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
   if (receiving_date < currentDate) {
@@ -2099,8 +2118,8 @@ app.post('/receivinginventory.html', async (req, res) => {
 
   try {
     await client.query('BEGIN');
-    const insertReceivingQuery = 'INSERT INTO receivings (date_received, item, warehouse_id) VALUES ($1, $2, $3)';
-    await pool.query(insertReceivingQuery, [receiving_date, item_name, warehouse]);
+    const insertReceivingQuery = 'INSERT INTO receivings (date_received, item, warehouse_id, "Size", "Quantity", "PO") VALUES ($1, $2, $3, $4, $5, $6)';
+    await pool.query(insertReceivingQuery, [receiving_date, item_name, warehouse, size, quantity, image]);
     await client.query('COMMIT');
 
 

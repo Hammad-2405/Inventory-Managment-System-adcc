@@ -169,7 +169,7 @@
                 <%= successMessage %>
             </div>
         <% } %>
-        <form action="/receivinginventory.html" method="post">
+        <form action="/receivinginventory.html" method="post" enctype="multipart/form-data">
             <div class="input-group">
                 <label for="item">Enter Item Name</label>
                 <input type="text" id="item_name" name="item_name" required>            
@@ -177,7 +177,7 @@
 
             <div class="input-group">
                 <label for="receiving-date">Enter Receiving Date</label>
-                <input type="date" id="receiving_date" name="receiving_date" required>            
+                <input type="date" id="receiving_date" name="receiving_date" >            
             </div>
 
             <div class="input-group">
@@ -187,6 +187,21 @@
                     <option value="2">Gharo</option>
                     <option value="3">Anchorage</option>
                 </select>
+            </div>
+
+            <div class="input-group">
+                <label for="size">Enter Size</label>
+                <input type="text" id="size" name="size" >            
+            </div>
+
+            <div class="input-group">
+                <label for="qty">Enter Quantity</label>
+                <input type="number" step="any" id="qty" name="quantity" required>            
+            </div>
+
+            <div class="input-group1">
+                <label for="image">Upload Purchase Order</label>
+                <input type="file" id="image" name="image" required>
             </div>
 
             <input type="submit" class="login-btn" value="Add Inventory">

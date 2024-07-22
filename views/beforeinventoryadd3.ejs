@@ -103,6 +103,11 @@
         button:hover {
             background-color: #d29000;
         }
+
+        .PO {
+            max-width: 100px; /* Adjust as needed */
+            max-height: 100px; /* Adjust as needed */
+        }
     </style>
 </head>
 <body>
@@ -119,29 +124,37 @@
     </div>
     <section>
         <form action="/addinventory3" method="get">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Receiving Date</th>
-                        <th>Select</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% items.forEach(item => { %>
-                    <tr>
-                        <td><%= item.item %></td>
-                        <td><%= item.date_received %></td>
-                        <td>
-                            <% if ((new Date(item.date_received).toLocaleDateString('en-GB') === new Date(currentDate).toLocaleDateString('en-GB')) || item.approved === true) { %>
-                            <button class="add-button" name="selectedItems" value="<%= item.id %>">Add to Inventory</button>
-                            <% } %>
-                        </td>
-                    </tr>
-                    <% }); %>
-                </tbody>
-            </table>
+          <table>
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Receiving Date</th>
+                <th>Size</th>
+                <th>PO</th>
+                <th>Select</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% items.forEach(item1 => { %>
+              <tr>
+                <td><%= item1.item_name %></td> <!-- Use 'item_name' instead of 'item' -->
+                <td><%= item1.date_received %></td>
+                <td><%= item1.size %></td> <!-- Use 'size' instead of 'Size' -->
+                <td>
+                  <% if (item1.image) { %> <!-- Use 'image' instead of 'PO' -->
+                  <a href="/temp/<%= item1.image.split('temp_')[1] %>" target="_blank">
+                    <img src="/temp/<%= item1.image.split('temp_')[1] %>" alt="PO" class="PO">
+                  </a>
+                  <% } else { %>
+                  No Image Available
+                  <% } %>
+                </td>
+                <td><button class="add-button" name="selectedItems" value="<%= item1.id %>">Add to Inventory</button></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
         </form>
-    </section>
+      </section>
 </body>
 </html>
