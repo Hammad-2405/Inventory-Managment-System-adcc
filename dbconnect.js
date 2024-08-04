@@ -984,31 +984,42 @@ app.get('/addprojects', (req, res) => {
   res.render('addprojects', { errorMessages, successMessage });
 });
 
+app.get('/addcontractors', (req, res) => {
+  const errorMessages = req.flash('errorMessages');
+  const successMessage = req.flash('successMessage');
+  res.render('addcontractors', { errorMessages, successMessage });
+});
 
 app.get('/warehouse1.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'warehouse1.html'));
 });
 
 app.get('/allocateinv1', (req, res) => {
-  res.render('allocateinv1', {
+  const project_id = req.query.project_id
+  const contractor_id = req.query.contractor_id
+  res.render('allocateinv1', { project_id, contractor_id ,
     errorMessages: req.flash('errorMessages'),
-    successMessage: req.flash('successMessage')
+    successMessage: req.flash('successMessage'),
   });
 });
 
 
 app.get('/allocateinv2', (req, res) => {
-  res.render('allocateinv2', {
+  const project_id = req.query.project_id
+  const contractor_id = req.query.contractor_id
+  res.render('allocateinv2', { project_id, contractor_id ,
     errorMessages: req.flash('errorMessages'),
-    successMessage: req.flash('successMessage')
+    successMessage: req.flash('successMessage'),
   });
 });
 
 
 app.get('/allocateinv3', (req, res) => {
-  res.render('allocateinv3', {
+  const project_id = req.query.project_id
+  const contractor_id = req.query.contractor_id
+  res.render('allocateinv3', { project_id, contractor_id ,
     errorMessages: req.flash('errorMessages'),
-    successMessage: req.flash('successMessage')
+    successMessage: req.flash('successMessage'),
   });
 });
 
@@ -1376,6 +1387,92 @@ app.get('/receivinginventory', (req, res) => {
   res.render('receivinginventory.ejs', { errorMessage: undefined });
 });
 
+app.get('/showprojects1', async (req, res) => {
+  try {
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT project_id, project_name FROM "projects" WHERE warehouse_id = 1');
+    const projects = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showprojects1', { projects });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showprojects2', async (req, res) => {
+  try {
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT project_id, project_name FROM "projects" WHERE warehouse_id = 2');
+    const projects = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showprojects2', { projects });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showprojects3', async (req, res) => {
+  try {
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT project_id, project_name FROM "projects" WHERE warehouse_id = 3');
+    const projects = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showprojects3', { projects });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showcontractors1', async (req, res) => {
+  try {
+    const projectId = req.query.project_id;
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT * FROM "contractors" WHERE project_id = $1', [projectId]);
+    const contractors = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showcontractors1', { contractors });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showcontractors2', async (req, res) => {
+  try {
+    const projectId = req.query.project_id;
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT * FROM "contractors" WHERE project_id = $1', [projectId]);
+    const contractors = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showcontractors2', { contractors });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showcontractors3', async (req, res) => {
+  try {
+    const projectId = req.query.project_id;
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT * FROM "contractors" WHERE project_id = $3', [projectId]);
+    const contractors = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showcontractors3', { contractors });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 app.post('/login', async (req, res) => {
   const { cnic, password } = req.body;
@@ -1718,7 +1815,7 @@ app.post('/addinventory1', async (req, res) => {
 
 
 app.post('/allocateinv1', async (req, res) => {
-  const { project_id, item_name, size, amount } = req.body;
+  const { project_id, contractor_id, item_name, size, amount } = req.body;
 
   // Validation checks
   if (!project_id || !item_name || !size || !amount) {
@@ -1792,7 +1889,7 @@ app.post('/allocateinv1', async (req, res) => {
     }
 
     // Insert the entry into allocated_inv table
-    const insertQuery = 'INSERT INTO allocated_inv (item_name, Size, project_id, allocated_amount) VALUES ($1, $2, $3, $4)';
+    const insertQuery = 'INSERT INTO allocated_inv (item_name, Size, project_id, allocated_amount, con_id) VALUES ($1, $2, $3, $4, $5)';
     await pool.query(insertQuery, [item_name, size, project_id, amount]);
 
     // Deduct the allocated amount from the inventory
@@ -2204,6 +2301,46 @@ app.post('/addprojects', async (req, res) => {
   }
 });
 
+app.post('/addcontractors', async (req, res) => {
+  const { conName, projectID, contact } = req.body;
+
+  // Validation
+  const errors = [];
+
+  try {
+    // Start a transaction
+    await pool.query('BEGIN');
+
+    // Insert the new project and return the project_id
+    const insertProjectQuery = `INSERT INTO contractors (con_name, project_id, contact) VALUES ($1, $2, $3)`;
+    const projectResult = await pool.query(insertProjectQuery, [conName, projectID, contact]);
+    // const projectId = projectResult.rows[0].project_id;
+
+    // Insert the BOQ entries
+    // if (Array.isArray(item_name)) {
+    //   for (let i = 0; i < item_name.length; i++) {
+    //     const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+    //     await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
+    //   }
+    // } else {
+    //   // Handle case when there's only one set of BOQ fields
+    //   const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+    //   await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
+    // }
+
+    // Commit the transaction
+    await pool.query('COMMIT');
+
+    req.flash('successMessage', 'Contractor added successfully!');
+    res.redirect('/addcontractors');
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await pool.query('ROLLBACK');
+    console.error('Error adding project:', error);
+    req.flash('errorMessages', ['Error adding project']);
+    res.redirect('/addcontractors');
+  }
+});
 
 app.post('/sharevendordetails', async (req, res) => {
   const { vendor_name, contact, cnic, project_id, works } = req.body;

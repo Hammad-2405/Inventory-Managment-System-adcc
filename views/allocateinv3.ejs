@@ -164,10 +164,14 @@
             <div class="success-message flash-message"><%= successMessage %></div>
         <% } %>
 
-        <form action="/allocateinv3" method="post">
+        <form action="/allocateinv1" method="post">
             <div class="input-group">
-                <label for="project_id">Enter Project ID</label>
-                <input type="text" id="project_id" name="project_id" required>
+                <label for="project_id">Project ID</label>
+                <input type="text" id="project_id" name="project_id" value="<%= project_id %>" readonly>
+            </div>
+            <div class="input-group">
+                <label for="contractor_id">Contractor ID</label>
+                <input type="text" id="contractor_id" name="contractor_id" value="<%= contractor_id %>" readonly>
             </div>
             <div class="input-group">
                 <label for="item_name">Enter Item Name</label>
