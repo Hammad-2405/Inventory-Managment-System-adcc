@@ -1157,6 +1157,55 @@ app.get('/generatevouchers', (req, res) => {
   res.render('generatevouchers.ejs', { errorMessages, successMessage });
 });
 
+app.get('/itemsissued', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1; // Get the current page from query params, default to page 1
+    const limit = 20; // Number of items per page
+    const offset = (page - 1) * limit; // Calculate offset based on page
+
+    // Query to fetch paginated results
+    const result = await pool.query('SELECT * FROM "receivings" LIMIT $1 OFFSET $2', [limit, offset]);
+    const receivings = result.rows.map(item1 => ({
+      item_id: item1.id,
+      item_name: item1.item,
+      date_received: item1.date_received,
+      size: item1.Size,
+      warehouse_id: item1.warehouse_id,
+      image: saveImage(item1.PO)
+    }));
+
+    // Get the total number of records for pagination controls
+    const totalResult = await pool.query('SELECT COUNT(*) FROM "receivings"');
+    const totalRecords = parseInt(totalResult.rows[0].count, 10);
+    const totalPages = Math.ceil(totalRecords / limit);
+
+    res.render('itemsissued', { receivings, currentPage: page, totalPages });
+  } catch (error) {
+    console.error('Error fetching receivings:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+
+app.post('/deleteReceiving/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log('Deleting receiving with id:', id); // Debugging line
+
+    // Delete the record from the 'receivings' table with the given id
+    await pool.query('DELETE FROM "receivings" WHERE id = $1', [id]);
+
+    // Redirect to the '/itemsissued' page after deletion
+    res.redirect('/itemsissued');
+  } catch (error) {
+    console.error('Error deleting receiving:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 app.get('/viewinventory1', async (req, res) => {
   try {
     // Query the 'Inventory' table to retrieve all inventory data
