@@ -85,11 +85,19 @@ client.connect()
 const fs = require('fs');
 
 // Function to save base64 image data as a temporary file
+// function saveImage(data) {
+//   const filePath = `temp/temp_${Date.now()}.jpg`; // Example: temp_162456789.jpg
+//   fs.writeFileSync(filePath, data, 'base64');
+//   return filePath;
+// }
+
+const { v4: uuidv4 } = require('uuid');
 function saveImage(data) {
-  const filePath = `temp/temp_${Date.now()}.jpg`; // Example: temp_162456789.jpg
+  const filePath = `temp/temp_${uuidv4()}.jpg`; // Unique filename
   fs.writeFileSync(filePath, data, 'base64');
   return filePath;
 }
+
 
 // Function to delete a file
 function deleteFile(filePath) {

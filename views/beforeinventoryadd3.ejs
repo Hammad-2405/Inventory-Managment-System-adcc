@@ -141,14 +141,14 @@
                 <td><%= item1.date_received %></td>
                 <td><%= item1.size %></td> <!-- Use 'size' instead of 'Size' -->
                 <td>
-                  <% if (item1.image) { %> <!-- Use 'image' instead of 'PO' -->
-                  <a href="/temp/<%= item1.image.split('temp_')[1] %>" target="_blank">
-                    <img src="/temp/<%= item1.image.split('temp_')[1] %>" alt="PO" class="PO">
-                  </a>
-                  <% } else { %>
-                  No Image Available
-                  <% } %>
-                </td>
+                    <% if (item1.image) { %>
+                    <a href="/<%= item1.image %>" target="_blank">
+                      <img src="/<%= item1.image %>" alt="PO" class="PO">
+                    </a>
+                    <% } else { %>
+                    No Image Available
+                    <% } %>
+                  </td>
                 <td><button class="add-button" name="selectedItems" value="<%= item1.id %>">Add to Inventory</button></td>
               </tr>
               <% }); %>
