@@ -6,167 +6,145 @@
     <title>Update User</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
-<style>
-    body {
-        background: url('img/pic43.jpg') no-repeat center center fixed;
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
-    }
+    <style>
+        body {
+            background: url('img/pic43.jpg') no-repeat center center fixed;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
 
-    .navBox {
-        background-color: #030f27;
-        width: 100%;
-        height: 100px;
-        /* Fixed height */
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        /* Vertically center items */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Add subtle shadow for separation */
-    }
+        .navBox {
+            background-color: #030f27;
+            width: 100%;
+            height: 100px;
+            /* Fixed height */
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* Add subtle shadow for separation */
+            justify-content: space-between;
+            padding: 0 20px;
+            /* Add padding for the button */
+        }
 
-    .navyImage,
-    .adccImage {
-        background-color: white;
-        display: flex;
-        align-items: center;
-        /* Vertically center items */
-        border-radius: 50%;
-        /* Make the background a circle */
-        padding: 10px;
-        /* Add padding to make the circle larger */
-    }
+        .navyImage,
+        .adccImage {
+            background-color: white;
+            display: flex;
+            align-items: center;
+            /* Vertically center items */
+            border-radius: 50%;
+            /* Make the background a circle */
+            padding: 10px;
+            /* Add padding to make the circle larger */
+        }
 
-    .navyImage img,
-    .adccImage img {
-        height: 80px;
-        /* Set the height of the image */
-        width: 80px;
-        /* Set the width of the image */
-        border-radius: 50%;
-        /* Make the image a circle */
-        object-fit: cover;
-        /* Ensure the image covers the area */
-    }
+        .navyImage img,
+        .adccImage img {
+            height: 80px;
+            /* Set the height of the image */
+            width: 80px;
+            /* Set the width of the image */
+            border-radius: 50%;
+            /* Make the image a circle */
+            object-fit: cover;
+            /* Ensure the image covers the area */
+        }
 
-    .adcc {
-        color: white;
-        margin-right: auto;
-        /* Set margin-right to auto to push it to the center */
-        margin-left: auto;
-        /* Set margin-left to auto to center it horizontally */
-        font-size: 23px;
-        text-align: center;
-        /* Align text content to center */
-        font-family: 'Poppins', sans-serif;
-        font-weight: bold;
-    }
+        .adcc {
+            color: white;
+            font-size: 23px;
+            text-align: center;
+            /* Align text content to center */
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
 
-    .addinventoryform {
-        max-width: 400px;
-        height: auto;
-        margin: 100px auto;
-        padding: 40px;
-        background: #fff;
-        border-radius: 8px;
-        text-align: center;
-        margin-top: 150px;
-        background: rgba(3, 15, 39, 0.8);
-    }
+        .back-container {
+            margin-top: 120px;
+            /* Margin to account for the fixed navbar height */
+            padding: 0 20px;
+        }
 
-    .heading {
-        color: white;
-        font-size: 20px;
-        margin-top: -40px;
-        font-family: 'poppins';
-    }
+        .back-btn {
+            color: white;
+            border: 2px solid #ffffff;
+            background: transparent;
+            font-family: 'Poppins', sans-serif;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
 
-    .input-group {
-        margin-bottom: 20px;
-    }
+        .back-btn:hover {
+            background-color: white;
+            color: #030f27;
+        }
 
-    .input-group label {
-        display: block;
-        margin-bottom: 7px;
-        color: white;
-        font-size: 16px;
-        text-align: left;
-        font-family: 'poppins';
-    }
+        .addinventoryform {
+            max-width: 400px;
+            height: auto;
+            margin: 100px auto;
+            padding: 40px;
+            background: #fff;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 60px;
+            background: rgba(3, 15, 39, 0.8);
+        }
 
-    .input-group select {
-        display: block;
-        width: 410px;
-        height: 35px;
-        margin-bottom: 7px;
-        border-radius: 6px;
-        color: white;
-        font-size: 16px;
-        text-align: left;
-    }
+        .heading {
+            color: white;
+            font-size: 20px;
+            margin-top: -40px;
+            font-family: 'Poppins';
+        }
 
-    .input-group input {
-        width: 98%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-    .input-group1 {
-        margin-bottom: 20px;
-    }
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: white;
+            font-size: 16px;
+            text-align: left;
+            font-family: 'Poppins';
+        }
 
-    .input-group1 label {
-        display: block;
-        margin-bottom: 7px;
-        color: white;
-        font-size: 16px;
-        text-align: left;
-        font-family: 'poppins';
-    }
+        .input-group input {
+            width: 98%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
 
-    .input-group1 select {
-        display: block;
-        width: 410px;
-        height: 35px;
-        margin-bottom: 7px;
-        border-radius: 6px;
-        color: white;
-        font-size: 16px;
-        text-align: left;
-    }
+        .login-btn {
+            color: white;
+            border: 3px solid #ffffff;
+            font-weight: bold;
+            border-radius: 0;
+            background: rgba(3, 15, 39, 0.8);
+            font-family: 'Poppins';
+            padding: 10px;
+            width: 40%;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
 
-    .input-group1 input {
-        width: 98%;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        color: white;
-    }
-
-    .login-btn {
-
-        color: white;
-        border: 3px solid #ffffff;
-        font-weight: bold;
-        border-radius: 0;
-        background: rgba(3, 15, 39, 0.8);
-        font-family: 'poppins';
-        padding: 10px;
-        width: 40%;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 5px;
-    }
-
-    .login-btn:hover {
+        .login-btn:hover {
             background: white;
-            /* Change to a slightly lighter shade of navy */
             color: black;
             border-color: white;
         }
@@ -182,6 +160,14 @@
             <img src="img/pic2.png" alt="NavyLogo">
         </div>
     </div>
+
+    <div class="back-container">
+        <a href="/ceodashboard.html" class="back-btn" style="background-color: #007bff; border: none; font-size: 20px;">
+            <b>Back to Dashboard</b>
+        </a>
+    </div>
+
+    
 
     <section class="addinventoryform">
         <div class="heading">
