@@ -992,6 +992,73 @@ app.get('/addprojects', (req, res) => {
   res.render('addprojects', { errorMessages, successMessage });
 });
 
+app.get('/showprojectsforboq', async (req, res) => {
+  try {
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT project_id, project_name, warehouse_id FROM "projects"');
+    const projects = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showprojectsforboq', { projects });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/addboq', (req, res) => {
+  const { project_id } = req.query;
+  res.render('addboq', { project_id ,
+    errorMessages: req.flash('errorMessages'),
+    successMessage: req.flash('successMessage'),
+  });
+});
+
+app.get('/deleteboq', async (req, res) => {
+  const { project_id } = req.query;
+
+  try {
+    // Query the database to fetch BOQs for the selected project
+    const result = await pool.query('SELECT item_name, size, deno, "limit" FROM "project_boq" WHERE project_id = $1', [project_id]);
+    const boqs = result.rows;
+
+    // Render the deleteboq.ejs template with the fetched BOQs data
+    res.render('deleteboq', { project_id, boqs });
+  } catch (error) {
+    console.error('Error fetching BOQs:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/deleteboqitem', async (req, res) => {
+  const { project_id, item_name, size, deno } = req.query;
+
+  try {
+    console.log('Attempting to delete BOQ item with:', { project_id, item_name, size, deno });
+
+    const result = await pool.query('DELETE FROM "project_boq" WHERE project_id = $1 AND item_name = $2 AND size = $3 AND deno = $4', [project_id, item_name, size, deno]);
+
+    if (result.rowCount > 0) {
+      req.flash('success', 'BOQ item deleted successfully.');
+    } else {
+      req.flash('error', 'No BOQ item found to delete.');
+    }
+
+    res.redirect(`/deleteboq?project_id=${project_id}`);
+  } catch (error) {
+    console.error('Error deleting BOQ item:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+app.get('/deleteboq', (req, res) => {
+  const errorMessages = req.flash('errorMessages');
+  const successMessage = req.flash('successMessage');
+  res.render('deleteboq', { errorMessages, successMessage });
+});
+
 app.get('/addcontractors', (req, res) => {
   const errorMessages = req.flash('errorMessages');
   const successMessage = req.flash('successMessage');
@@ -2356,6 +2423,45 @@ app.post('/addprojects', async (req, res) => {
     req.flash('errorMessages', ['Error adding project']);
     res.redirect('/addprojects');
   }
+});
+
+app.post('/addboq', async (req, res) => {
+  const { project_id, item_name, size, deno, limit } = req.body;
+  
+
+  if (!project_id || !item_name || !size) {
+    req.flash('errorMessages', 'All fields are required.');
+    return res.redirect('/addboq');
+  }
+  const errors = [];
+  if (isNaN(parseInt(limit))) {
+    errors.push('Limit must be an integer.');
+  }
+  if (isNaN(parseInt))
+
+  if (errors.length > 0) {
+    req.flash('errorMessages', errors);
+    return res.redirect('/addboq');
+  }
+
+  try{
+    await pool.query('BEGIN');
+    
+    const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+    await pool.query(insertBoqQuery, [project_id, item_name, size, deno, limit])
+
+    await pool.query('COMMIT');
+
+    req.flash('successMessage', 'BOQ added successfully!');
+    res.redirect('/addboq');
+  } catch (error) {
+    // Rollback the transaction in case of error
+    await pool.query('ROLLBACK');
+    console.error('Error adding BOQ:', error);
+    req.flash('errorMessages', ['Error adding BOQ']);
+    res.redirect('/addboq');
+  }
+
 });
 
 app.post('/addcontractors', async (req, res) => {
