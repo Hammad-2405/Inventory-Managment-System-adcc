@@ -2367,17 +2367,17 @@ app.post('/addprojects', async (req, res) => {
   if (isNaN(parseFloat(projectBudget))) {
     errors.push('Project budget must be a number.');
   }
-  if (Array.isArray(limit)) {
-    limit.forEach(l => {
-      if (isNaN(parseInt(l))) {
-        errors.push('Limit must be an integer.');
-      }
-    });
-  } else {
-    if (isNaN(parseInt(limit))) {
-      errors.push('Limit must be an integer.');
-    }
-  }
+  // if (Array.isArray(limit)) {
+  //   limit.forEach(l => {
+  //     if (isNaN(parseInt(l))) {
+  //       errors.push('Limit must be an integer.');
+  //     }
+  //   });
+  // } else {
+  //   if (isNaN(parseInt(limit))) {
+  //     errors.push('Limit must be an integer.');
+  //   }
+  // }
 
   const currentDate = new Date();
   const deadlineDate = new Date(projectDeadline);
@@ -2400,21 +2400,21 @@ app.post('/addprojects', async (req, res) => {
     const projectId = projectResult.rows[0].project_id;
 
     // Insert the BOQ entries
-    if (Array.isArray(item_name)) {
-      for (let i = 0; i < item_name.length; i++) {
-        const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-        await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
-      }
-    } else {
-      // Handle case when there's only one set of BOQ fields
-      const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-      await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
-    }
+    // if (Array.isArray(item_name)) {
+    //   for (let i = 0; i < item_name.length; i++) {
+    //     const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+    //     await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
+    //   }
+    // } else {
+    //   // Handle case when there's only one set of BOQ fields
+    //   const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+    //   await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
+    // }
 
     // Commit the transaction
     await pool.query('COMMIT');
 
-    req.flash('successMessage', 'Project and BOQ entries added successfully!');
+    req.flash('successMessage', 'Project added successfully!');
     res.redirect('/addprojects');
   } catch (error) {
     // Rollback the transaction in case of error
