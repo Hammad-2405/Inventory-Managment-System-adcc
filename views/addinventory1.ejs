@@ -211,6 +211,7 @@
         <% } %>
 
         <form action="/addinventory1" method="post">
+            <input type="hidden" name="receivingId" value="<%= receiving.id %>">
             <div class="input-group">
                 <label for="item">Enter Item Name</label>
                 <input type="text" id="item" name="item" required>

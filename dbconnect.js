@@ -1295,10 +1295,34 @@ app.get('/viewinventory1', async (req, res) => {
   }
 });
 
-app.get('/addinventory1', (req, res) => {
+app.get('/addinventory1', async (req, res) => {
+  const { receivingId } = req.query;
   const errorMessages = req.flash('errorMessages');
   const successMessage = req.flash('successMessage');
-  res.render('addinventory1', { errorMessages, successMessage });
+
+  // if (!receivingId) {
+  //   req.flash('error_msg', 'No receiving ID provided.');
+  //   return res.redirect('/beforeinventoryadd3'); // Replace with the appropriate redirect route
+  // }
+
+  try {
+    // You may fetch additional data based on the receivingId if needed
+    const id = parseInt(receivingId, 10);
+    // if (isNaN(id)) {
+    //   req.flash('error_msg', 'Invalid receiving ID.');
+    //   return res.redirect('/beforeinventoryadd3'); // Redirect if invalid ID
+    // }
+    const result = await pool.query('SELECT * FROM receivings WHERE id = $1', [id]);
+
+    const receiving = result.rows[0];
+
+    // Render your addinventory3 form with the receivingId embedded in a hidden input
+    res.render('addinventory1', {  errorMessages, successMessage, receiving });
+  } catch (error) {
+    console.error('Error retrieving receiving:', error);
+    req.flash('error_msg', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd1'); // Replace with the appropriate redirect route
+  }
 });
 
 app.get('/beforeinventoryadd1', async (req, res) => {
@@ -1321,7 +1345,8 @@ app.get('/beforeinventoryadd1', async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO)
+      image: saveImage(item1.PO),
+      id: item1.id
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
@@ -1353,7 +1378,8 @@ app.get('/beforeinventoryadd2', async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO)
+      image: saveImage(item1.PO),
+      id: item1.id
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
@@ -1385,7 +1411,8 @@ app.get('/beforeinventoryadd3', async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO)
+      image: saveImage(item1.PO),
+      id: item1.id
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
@@ -1411,11 +1438,36 @@ app.get('/viewinventory2', async (req, res) => {
   }
 });
 
-app.get('/addinventory2', (req, res) => {
+app.get('/addinventory2', async (req, res) => {
+  const { receivingId } = req.query;
   const errorMessages = req.flash('errorMessages');
   const successMessage = req.flash('successMessage');
-  res.render('addinventory2', { errorMessages, successMessage });
+
+  // if (!receivingId) {
+  //   req.flash('error_msg', 'No receiving ID provided.');
+  //   return res.redirect('/beforeinventoryadd3'); // Replace with the appropriate redirect route
+  // }
+
+  try {
+    // You may fetch additional data based on the receivingId if needed
+    const id = parseInt(receivingId, 10);
+    // if (isNaN(id)) {
+    //   req.flash('error_msg', 'Invalid receiving ID.');
+    //   return res.redirect('/beforeinventoryadd3'); // Redirect if invalid ID
+    // }
+    const result = await pool.query('SELECT * FROM receivings WHERE id = $1', [id]);
+
+    const receiving = result.rows[0];
+
+    // Render your addinventory3 form with the receivingId embedded in a hidden input
+    res.render('addinventory2', {  errorMessages, successMessage, receiving });
+  } catch (error) {
+    console.error('Error retrieving receiving:', error);
+    req.flash('error_msg', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd2'); // Replace with the appropriate redirect route
+  }
 });
+
 
 app.get('/viewinventory3', async (req, res) => {
   try {
@@ -1431,11 +1483,43 @@ app.get('/viewinventory3', async (req, res) => {
   }
 });
 
-app.get('/addinventory3', (req, res) => {
+// app.get('/addinventory3', (req, res) => {
+//   const { receivingId } = req.query;
+//   const errorMessages = req.flash('errorMessages');
+//   const successMessage = req.flash('successMessage');
+//   res.render('addinventory3', { errorMessages, successMessage, receivingId });
+// });
+
+app.get('/addinventory3', async (req, res) => {
+  const { receivingId } = req.query;
   const errorMessages = req.flash('errorMessages');
   const successMessage = req.flash('successMessage');
-  res.render('addinventory3', { errorMessages, successMessage });
+
+  // if (!receivingId) {
+  //   req.flash('error_msg', 'No receiving ID provided.');
+  //   return res.redirect('/beforeinventoryadd3'); // Replace with the appropriate redirect route
+  // }
+
+  try {
+    // You may fetch additional data based on the receivingId if needed
+    const id = parseInt(receivingId, 10);
+    // if (isNaN(id)) {
+    //   req.flash('error_msg', 'Invalid receiving ID.');
+    //   return res.redirect('/beforeinventoryadd3'); // Redirect if invalid ID
+    // }
+    const result = await pool.query('SELECT * FROM receivings WHERE id = $1', [id]);
+
+    const receiving = result.rows[0];
+
+    // Render your addinventory3 form with the receivingId embedded in a hidden input
+    res.render('addinventory3', {  errorMessages, successMessage, receiving });
+  } catch (error) {
+    console.error('Error retrieving receiving:', error);
+    req.flash('error_msg', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd3'); // Replace with the appropriate redirect route
+  }
 });
+
 
 // Route to render the approvevouchers.ejs template
 // Route to render the approvevouchers.ejs template
@@ -1895,20 +1979,26 @@ app.post('/transfersalaryconfirmed', async (req, res) => {
 // Handle form submission to add inventory
 app.post('/addinventory1', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price } = req.body;
+    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const id = parseInt(receivingId, 10);
 
     // Validation checks
     if (!item || !size || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
-      return res.redirect('/addinventory1');
+      return res.redirect(`/addinventory1?receivingId=${receivingId}`);
     }
 
     if (isNaN(price)) {
       req.flash('error_msg', 'Price must be a numeric value.');
-      return res.redirect('/addinventory1');
+      return res.redirect(`/addinventory1?receivingId=${receivingId}`);
     }
 
-    await client.query('BEGIN');
+    if (isNaN(id)) {
+      req.flash('error_msg', 'Invalid receiving ID.');
+      return res.redirect(`/addinventory1?receivingId=${receivingId}`);
+    }
+
+    await pool.query('BEGIN');
 
     // Insert the inventory into the database
     const insertQuery = `
@@ -1919,20 +2009,22 @@ app.post('/addinventory1', async (req, res) => {
 
     const recvdelQuery = `
       DELETE FROM receivings 
-      WHERE date_received::date = CURRENT_DATE 
-      AND warehouse_id = 1 
-      AND receivings.item = $1;
+      WHERE id = $1;
     `;
-    await pool.query(recvdelQuery, [item]);
-    await client.query('COMMIT');
-
-    req.flash('successMessage', 'Inventory added successfully.');
+    const result = await pool.query(recvdelQuery, [id]);
+    await pool.query('COMMIT');
+    
+    if (result.rowCount === 0) {
+      req.flash('error_msg', 'No matching row found to delete.');
+    } else {
+      req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
+    }
     res.redirect('/addinventory1');
   } catch (error) {
-    await client.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
     req.flash('error_msg', 'Internal Server Error.');
-    res.redirect('/addinventory1');
+    res.redirect(`/addinventory1?receivingId=${receivingId}`);
   }
 });
 
@@ -2033,23 +2125,28 @@ app.post('/allocateinv1', async (req, res) => {
 
 
 
-
 app.post('/addinventory2', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price } = req.body;
+    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const id = parseInt(receivingId, 10);
 
     // Validation checks
     if (!item || !size || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
-      return res.redirect('/addinventory2');
+      return res.redirect(`/addinventory2?receivingId=${receivingId}`);
     }
 
     if (isNaN(price)) {
       req.flash('error_msg', 'Price must be a numeric value.');
-      return res.redirect('/addinventory2');
+      return res.redirect(`/addinventory2?receivingId=${receivingId}`);
     }
 
-    await client.query('BEGIN');
+    if (isNaN(id)) {
+      req.flash('error_msg', 'Invalid receiving ID.');
+      return res.redirect(`/addinventory2receivingId=${receivingId}`);
+    }
+
+    await pool.query('BEGIN');
 
     // Insert the inventory into the database
     const insertQuery = `
@@ -2060,20 +2157,22 @@ app.post('/addinventory2', async (req, res) => {
 
     const recvdelQuery = `
       DELETE FROM receivings 
-      WHERE date_received::date = CURRENT_DATE 
-      AND warehouse_id = 2 
-      AND receivings.item = $1;
+      WHERE id = $1;
     `;
-    await pool.query(recvdelQuery, [item]);
-    await client.query('COMMIT');
-
-    req.flash('successMessage', 'Inventory added successfully.');
+    const result = await pool.query(recvdelQuery, [id]);
+    await pool.query('COMMIT');
+    
+    if (result.rowCount === 0) {
+      req.flash('error_msg', 'No matching row found to delete.');
+    } else {
+      req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
+    }
     res.redirect('/addinventory2');
   } catch (error) {
-    await client.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
     req.flash('error_msg', 'Internal Server Error.');
-    res.redirect('/addinventory2');
+    res.redirect(`/addinventory2?receivingId=${receivingId}`);
   }
 });
 
@@ -2172,20 +2271,26 @@ app.post('/allocateinv2', async (req, res) => {
 
 app.post('/addinventory3', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price } = req.body;
+    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const id = parseInt(receivingId, 10);
 
     // Validation checks
     if (!item || !size || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
-      return res.redirect('/addinventory3');
+      return res.redirect(`/addinventory3?receivingId=${receivingId}`);
     }
 
     if (isNaN(price)) {
       req.flash('error_msg', 'Price must be a numeric value.');
-      return res.redirect('/addinventory3');
+      return res.redirect(`/addinventory3?receivingId=${receivingId}`);
     }
 
-    await client.query('BEGIN');
+    if (isNaN(id)) {
+      req.flash('error_msg', 'Invalid receiving ID.');
+      return res.redirect(`/addinventory3?receivingId=${receivingId}`);
+    }
+
+    await pool.query('BEGIN');
 
     // Insert the inventory into the database
     const insertQuery = `
@@ -2196,20 +2301,22 @@ app.post('/addinventory3', async (req, res) => {
 
     const recvdelQuery = `
       DELETE FROM receivings 
-      WHERE date_received::date = CURRENT_DATE 
-      AND warehouse_id = 3 
-      AND receivings.item = $1;
+      WHERE id = $1;
     `;
-    await pool.query(recvdelQuery, [item]);
-    await client.query('COMMIT');
-
-    req.flash('successMessage', 'Inventory added successfully.');
+    const result = await pool.query(recvdelQuery, [id]);
+    await pool.query('COMMIT');
+    
+    if (result.rowCount === 0) {
+      req.flash('error_msg', 'No matching row found to delete.');
+    } else {
+      req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
+    }
     res.redirect('/addinventory3');
   } catch (error) {
-    await client.query('ROLLBACK');
+    await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
     req.flash('error_msg', 'Internal Server Error.');
-    res.redirect('/addinventory3');
+    res.redirect(`/addinventory3?receivingId=${receivingId}`);
   }
 });
 
