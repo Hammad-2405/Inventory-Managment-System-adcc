@@ -108,6 +108,31 @@
             max-width: 100px; /* Adjust as needed */
             max-height: 100px; /* Adjust as needed */
         }
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .flash-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .error-messages .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -123,6 +148,17 @@
         </div>
     </div>
     <section>
+        <% if (errorMessages && errorMessages.length > 0) { %>
+            <div class="error-messages">
+              <% errorMessages.forEach(message => { %>
+                <div class="error-message"><%= message %></div>
+              <% }); %>
+            </div>
+          <% } %>
+        
+          <% if (successMessage && successMessage.length > 0) { %>
+            <div class="success-message"><%= successMessage %></div>
+          <% } %>
         <form action="/addinventory1" method="get">
           <table>
             <thead>

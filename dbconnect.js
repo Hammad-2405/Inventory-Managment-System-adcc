@@ -1316,7 +1316,6 @@ app.get('/addinventory1', async (req, res) => {
 
     const receiving = result.rows[0];
 
-    // Render your addinventory3 form with the receivingId embedded in a hidden input
     res.render('addinventory1', {  errorMessages, successMessage, receiving });
   } catch (error) {
     console.error('Error retrieving receiving:', error);
@@ -1326,6 +1325,8 @@ app.get('/addinventory1', async (req, res) => {
 });
 
 app.get('/beforeinventoryadd1', async (req, res) => {
+  const errorMessages = req.flash('errorMessages');
+  const successMessage = req.flash('successMessage');
   try {
     await client.query('BEGIN');
     const currentDate = new Date().toISOString().split('T')[0];
@@ -1350,7 +1351,7 @@ app.get('/beforeinventoryadd1', async (req, res) => {
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd1', { items, currentDate: currentDate });
+    res.render('beforeinventoryadd1', {errorMessages, successMessage, items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -1359,6 +1360,8 @@ app.get('/beforeinventoryadd1', async (req, res) => {
 });
 
 app.get('/beforeinventoryadd2', async (req, res) => {
+  const errorMessages = req.flash('errorMessages');
+  const successMessage = req.flash('successMessage');
   try {
     await client.query('BEGIN');
     const currentDate = new Date().toISOString().split('T')[0];
@@ -1383,7 +1386,7 @@ app.get('/beforeinventoryadd2', async (req, res) => {
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd2', { items, currentDate: currentDate });
+    res.render('beforeinventoryadd2', { errorMessages, successMessage, items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -1392,6 +1395,8 @@ app.get('/beforeinventoryadd2', async (req, res) => {
 });
 
 app.get('/beforeinventoryadd3', async (req, res) => {
+  const errorMessages = req.flash('errorMessages');
+  const successMessage = req.flash('successMessage');
   try {
     await client.query('BEGIN');
     const currentDate = new Date().toISOString().split('T')[0];
@@ -1416,7 +1421,7 @@ app.get('/beforeinventoryadd3', async (req, res) => {
     }));
     await client.query('COMMIT');
     // Render the selectitems.ejs template with the fetched items
-    res.render('beforeinventoryadd3', { items, currentDate: currentDate });
+    res.render('beforeinventoryadd3', {  errorMessages, successMessage, items, currentDate: currentDate });
   } catch (error) {
     await client.query('ROLLBACK');
     console.error('Error fetching items:', error);
@@ -1515,7 +1520,7 @@ app.get('/addinventory3', async (req, res) => {
     res.render('addinventory3', {  errorMessages, successMessage, receiving });
   } catch (error) {
     console.error('Error retrieving receiving:', error);
-    req.flash('error_msg', 'Internal Server Error.');
+    req.flash('errorMessages', 'Internal Server Error.');
     res.redirect('/beforeinventoryadd3'); // Replace with the appropriate redirect route
   }
 });
@@ -1979,11 +1984,11 @@ app.post('/transfersalaryconfirmed', async (req, res) => {
 // Handle form submission to add inventory
 app.post('/addinventory1', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const { item, size, po_num, deno, qtyrequired, price, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !deno || !qtyrequired || !price) {
+    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
       return res.redirect(`/addinventory1?receivingId=${receivingId}`);
     }
@@ -2002,10 +2007,10 @@ app.post('/addinventory1', async (req, res) => {
 
     // Insert the inventory into the database
     const insertQuery = `
-      INSERT INTO public."warehouse1inventory" ("ITEM", "Size", "DENO", "Qty Required", "price")
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO public."warehouse1inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    await pool.query(insertQuery, [item, size, deno, qtyrequired, price]);
+    await pool.query(insertQuery, [item, size, deno, qtyrequired, price, po_num]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -2015,16 +2020,16 @@ app.post('/addinventory1', async (req, res) => {
     await pool.query('COMMIT');
     
     if (result.rowCount === 0) {
-      req.flash('error_msg', 'No matching row found to delete.');
+      req.flash('errorMessages', 'No matching row found to delete.');
     } else {
       req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
     }
-    res.redirect('/addinventory1');
+    res.redirect('/beforeinventoryadd1');
   } catch (error) {
     await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
-    req.flash('error_msg', 'Internal Server Error.');
-    res.redirect(`/addinventory1?receivingId=${receivingId}`);
+    req.flash('errorMessages', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd1');
   }
 });
 
@@ -2127,11 +2132,11 @@ app.post('/allocateinv1', async (req, res) => {
 
 app.post('/addinventory2', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const { item, size, po_num, deno, qtyrequired, price, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !deno || !qtyrequired || !price) {
+    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
       return res.redirect(`/addinventory2?receivingId=${receivingId}`);
     }
@@ -2143,17 +2148,17 @@ app.post('/addinventory2', async (req, res) => {
 
     if (isNaN(id)) {
       req.flash('error_msg', 'Invalid receiving ID.');
-      return res.redirect(`/addinventory2receivingId=${receivingId}`);
+      return res.redirect(`/addinventory2?receivingId=${receivingId}`);
     }
 
     await pool.query('BEGIN');
 
     // Insert the inventory into the database
     const insertQuery = `
-      INSERT INTO public."warehouse2inventory" ("ITEM", "Size", "DENO", "Qty Required", "price")
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO public."warehouse2inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    await pool.query(insertQuery, [item, size, deno, qtyrequired, price]);
+    await pool.query(insertQuery, [item, size, deno, qtyrequired, price, po_num]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -2163,16 +2168,16 @@ app.post('/addinventory2', async (req, res) => {
     await pool.query('COMMIT');
     
     if (result.rowCount === 0) {
-      req.flash('error_msg', 'No matching row found to delete.');
+      req.flash('errorMessages', 'No matching row found to delete.');
     } else {
       req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
     }
-    res.redirect('/addinventory2');
+    res.redirect('/beforeinventoryadd2');
   } catch (error) {
     await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
-    req.flash('error_msg', 'Internal Server Error.');
-    res.redirect(`/addinventory2?receivingId=${receivingId}`);
+    req.flash('errorMessages', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd2');
   }
 });
 
@@ -2271,11 +2276,11 @@ app.post('/allocateinv2', async (req, res) => {
 
 app.post('/addinventory3', async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, price, receivingId } = req.body;
+    const { item, size, po_num, deno, qtyrequired, price, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !deno || !qtyrequired || !price) {
+    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
       req.flash('error_msg', 'All fields are required.');
       return res.redirect(`/addinventory3?receivingId=${receivingId}`);
     }
@@ -2294,10 +2299,10 @@ app.post('/addinventory3', async (req, res) => {
 
     // Insert the inventory into the database
     const insertQuery = `
-      INSERT INTO public."warehouse3inventory" ("ITEM", "Size", "DENO", "Qty Required", "price")
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO public."warehouse3inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
+      VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    await pool.query(insertQuery, [item, size, deno, qtyrequired, price]);
+    await pool.query(insertQuery, [item, size, deno, qtyrequired, price, po_num]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -2307,16 +2312,16 @@ app.post('/addinventory3', async (req, res) => {
     await pool.query('COMMIT');
     
     if (result.rowCount === 0) {
-      req.flash('error_msg', 'No matching row found to delete.');
+      req.flash('errorMessages', 'No matching row found to delete.');
     } else {
       req.flash('successMessage', 'Inventory added and corresponding receiving deleted successfully.');
     }
-    res.redirect('/addinventory3');
+    res.redirect('/beforeinventoryadd3');
   } catch (error) {
     await pool.query('ROLLBACK');
     console.error('Error adding inventory:', error);
-    req.flash('error_msg', 'Internal Server Error.');
-    res.redirect(`/addinventory3?receivingId=${receivingId}`);
+    req.flash('errorMessages', 'Internal Server Error.');
+    res.redirect('/beforeinventoryadd3');
   }
 });
 
@@ -2435,7 +2440,7 @@ app.post('/updateboq', async (req, res) => {
 });
 
 app.post('/receivinginventory.html', upload.single('image'), async (req, res) => {
-  const { item_name, receiving_date, warehouse, size, quantity } = req.body;
+  const { item_name, receiving_date, warehouse, size, quantity, po_num } = req.body;
   const image = req.file ? req.file.buffer : null;
   const currentDate = new Date().toISOString().split('T')[0]; // Get current date in 'YYYY-MM-DD' format
 
@@ -2446,8 +2451,8 @@ app.post('/receivinginventory.html', upload.single('image'), async (req, res) =>
 
   try {
     await client.query('BEGIN');
-    const insertReceivingQuery = 'INSERT INTO receivings (date_received, item, warehouse_id, "Size", "Quantity", "PO") VALUES ($1, $2, $3, $4, $5, $6)';
-    await pool.query(insertReceivingQuery, [receiving_date, item_name, warehouse, size, quantity, image]);
+    const insertReceivingQuery = 'INSERT INTO receivings (date_received, item, warehouse_id, "Size", "Quantity", "PO", "PO_Num") VALUES ($1, $2, $3, $4, $5, $6, $7)';
+    await pool.query(insertReceivingQuery, [receiving_date, item_name, warehouse, size, quantity, image, po_num]);
     await client.query('COMMIT');
 
 
