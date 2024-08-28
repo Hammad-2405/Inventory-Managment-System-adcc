@@ -744,6 +744,20 @@ app.get('/viewwarehouse3-others',  async (req, res) => {
   }
 });
 
+app.get('/viewprojects-forcontractors',  async (req, res) => {
+  try {
+    // Fetch projects of Warehouse 1 from the database
+    const result = await pool.query('SELECT * FROM projects');
+    const projects = result.rows;
+
+    // Render the viewwarehouse1.ejs template with the fetched projects
+    res.render('viewprojects-forcontractors', { projects });
+  } catch (error) {
+    console.error('Error fetching Warehouse 1 projects:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 app.get('/viewprojects1',  async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
@@ -1636,6 +1650,21 @@ app.get('/showprojects3', async (req, res) => {
 
     // Render the viewinventory.ejs template with the fetched inventory data
     res.render('showprojects3', { projects });
+  } catch (error) {
+    console.error('Error fetching inventory:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.get('/showcontractors', async (req, res) => {
+  try {
+    const projectId = req.query.project_id;
+    // Query the 'Inventory' table to retrieve all inventory data
+    const result = await pool.query('SELECT * FROM "contractors" WHERE project_id = $1', [projectId]);
+    const contractors = result.rows;
+
+    // Render the viewinventory.ejs template with the fetched inventory data
+    res.render('showcontractors', { contractors });
   } catch (error) {
     console.error('Error fetching inventory:', error);
     res.status(500).send('Internal Server Error');
