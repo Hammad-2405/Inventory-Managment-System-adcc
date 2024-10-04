@@ -177,14 +177,14 @@
             <div class="success-message flash-message"><%= successMessage %></div>
         <% } %>
 
-        <form action="/allocateinv1" method="post">
+        <form action="/allocateinv3" method="post">
             <div class="input-group">
                 <label for="project_id">Project ID</label>
                 <input type="text" id="project_id" name="project_id" value="<%= project_id %>" readonly>
             </div>
             <div class="input-group">
                 <label for="contractor_id">Contractor ID</label>
-                <input type="text" id="contractor_id" name="contractor_id" value="<%= contractor_id %>" readonly>
+                <input type="text" id="con_id" name="con_id" value="<%= contractor_id %>" readonly>
             </div>
             <div class="input-group">
                 <label for="item_name">Enter Item Name</label>
@@ -197,6 +197,10 @@
             <div class="input-group">
                 <label for="amount">Enter Allocated Amount</label>
                 <input type="number" id="amount" name="amount" required>
+            </div>
+            <div class="input-group">
+                <label for="date">Enter Allocation Date</label>
+                <input type="date" id="date" name="date" required>
             </div>
             <input type="submit" class="login-btn" value="Allocate Inventory">
         </form>

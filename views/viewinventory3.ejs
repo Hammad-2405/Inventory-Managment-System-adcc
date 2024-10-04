@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse 3 Inventory Overview</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
+    <title>Anchorage Inventory Overview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -99,6 +98,19 @@
             color: black;
             font-size: 18px;
         }
+
+        .view-button {
+            background-color: #fdbe33;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .view-button:hover {
+            background-color: #e5a120;
+        }
     </style>
 </head>
 
@@ -115,70 +127,57 @@
         </div>
     </div>
     <section>
-        <div class="search-container">
+        <!-- <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for items...">
-        </div>
+        </div> -->
         <table id="inventoryTable">
             <thead>
                 <tr>
-                    <th>S No</th>
                     <th>Item</th>
-                    <th>Size</th>
-                    <th>PO Number</th>
-                    <th>Deno</th>
-                    <th>Qty</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-                <% inventory.forEach(item=> { %>
+                <% inventory.forEach(item => { %>
                     <tr>
-                        <td>
-                            <%= item['S No'] %>
-                        </td>
                         <td>
                             <%= item['ITEM'] %>
                         </td>
                         <td>
-                            <%= item['Size'] %>
-                        </td>
-                        <td>
-                            <%= item['PO_Num'] %>
-                        </td>
-                        <td>
-                            <%= item['DENO'] %>
-                        </td>
-                        <td>
-                            <%= item['Qty Required'] %>
+                            <form action="/view-item" method="get">
+                                <input type="hidden" name="item" value="<%= item['ITEM'] %>">
+                                <button class="view-button" type="submit">View Details</button>
+                            </form>
                         </td>
                     </tr>
-                    <% }); %>
+                <% }); %>
             </tbody>
         </table>
     </section>
 
     <script>
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('keyup', function () {
-            const filter = searchInput.value.toLowerCase();
-            const rows = document.querySelectorAll('#inventoryTable tbody tr');
+        // const searchInput = document.getElementById('searchInput');
+        // searchInput.addEventListener('keyup', function () {
+        //     const filter = searchInput.value.toLowerCase();
+        //     const rows = document.querySelectorAll('#inventoryTable tbody tr');
 
-            rows.forEach(row => {
-                const cells = row.querySelectorAll('td');
-                let found = false;
+        //     rows.forEach(row => {
+        //         const cells = row.querySelectorAll('td');
+        //         let found = false;
 
-                cells.forEach(cell => {
-                    if (cell.textContent.toLowerCase().includes(filter)) {
-                        found = true;
-                    }
-                });
+        //         cells.forEach(cell => {
+        //             if (cell.textContent.toLowerCase().includes(filter)) {
+        //                 found = true;
+        //             }
+        //         });
 
-                if (found) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+        //         if (found) {
+        //             row.style.display = '';
+        //         } else {
+        //             row.style.display = 'none';
+        //         }
+        //     });
+        // });
     </script>
 </body>
 
