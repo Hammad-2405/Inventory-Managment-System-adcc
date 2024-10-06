@@ -2333,7 +2333,7 @@ app.post("/allocateinv1", async (req, res) => {
   const w_id = 1;
 
   // Validation checks
-  if (!project_id || !item_name || !size || !amount) {
+  if (!project_id || !item_name || !amount) {
     req.flash("errorMessages", "All fields are required.");
     return res.redirect("/allocateinv1");
   }
@@ -2536,7 +2536,7 @@ app.post("/allocateinv2", async (req, res) => {
   const w_id = 2;
 
   // Validation checks
-  if (!project_id || !item_name || !size || !amount) {
+  if (!project_id || !item_name || !amount) {
     req.flash("errorMessages", "All fields are required.");
     return res.redirect("/allocateinv2");
   }
@@ -2739,7 +2739,7 @@ app.post("/allocateinv3", async (req, res) => {
   const w_id = 3;
 
   // Validation checks
-  if (!project_id || !item_name || !size || !amount) {
+  if (!project_id || !item_name || !amount) {
     req.flash("errorMessages", "All fields are required.");
     return res.redirect("/allocateinv3");
   }
