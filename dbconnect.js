@@ -2364,11 +2364,14 @@ app.post("/allocateinv1", async (req, res) => {
     const upperItemName = item_name.toUpperCase();
 
     // Check if the item exists in inventory (case-insensitive)
-    const itemExistsQuery =
-      'SELECT * FROM warehouse1inventory WHERE "ITEM" = $1 AND "Size" = $2';
+    const itemExistsQuery = `
+      SELECT * FROM warehouse1inventory 
+      WHERE "ITEM" = $1 
+      AND ( ("Size" = $2) OR ("Size" IS NULL AND $2 IS NULL) )
+    `;
     const itemExistsResult = await pool.query(itemExistsQuery, [
       upperItemName,
-      size,
+      size || null, // Handle null size explicitly
     ]);
     if (itemExistsResult.rows.length === 0) {
       req.flash("errorMessages", "Item not found in inventory");
@@ -2376,11 +2379,15 @@ app.post("/allocateinv1", async (req, res) => {
     }
 
     // Check if the allocated amount is not greater than the available quantity
-    const availableQuantityQuery =
-      'SELECT "Qty Required" FROM warehouse1inventory WHERE "ITEM" = $1 AND "Size" = $2';
+    const availableQuantityQuery = `
+      SELECT "Qty Required" 
+      FROM warehouse1inventory 
+      WHERE "ITEM" = $1 
+      AND ( ("Size" = $2) OR ("Size" IS NULL AND $2 IS NULL) )
+    `;
     const availableQuantityResult = await pool.query(availableQuantityQuery, [
       upperItemName,
-      size,
+      size || null,
     ]);
     const availableQuantity = availableQuantityResult.rows[0]["Qty Required"];
     if (amount > availableQuantity) {
@@ -2389,12 +2396,17 @@ app.post("/allocateinv1", async (req, res) => {
     }
 
     // Check if the allocated amount does not exceed the BOQ limit
-    const boqQuery =
-      'SELECT "limit" FROM project_boq WHERE project_id = $1 AND item_name = $2 AND size = $3';
+    const boqQuery = `
+      SELECT "limit" 
+      FROM project_boq 
+      WHERE project_id = $1 
+      AND item_name = $2 
+      AND ( ("size" = $3) OR ("size" IS NULL AND $3 IS NULL) )
+    `;
     const boqResult = await pool.query(boqQuery, [
       project_id,
       upperItemName,
-      size,
+      size || null,
     ]);
     if (boqResult.rows.length === 0) {
       req.flash(
@@ -2403,17 +2415,21 @@ app.post("/allocateinv1", async (req, res) => {
       );
       return res.redirect("/allocateinv1");
     }
+
     const boqLimit = boqResult.rows[0].limit;
     if (amount > boqLimit) {
       const message2 = `BOQ ALERT! ${item_name} size ${size} for project ${project_id} has exceeded its BOQ limit.`;
-      const notqs =
-        "INSERT INTO notifications_qs (message, read, project_id, item_name, size) VALUES ($1, $2, $3, $4, $5)";
+      const notqs = `
+        INSERT INTO notifications_qs 
+        (message, read, project_id, item_name, size) 
+        VALUES ($1, $2, $3, $4, $5)
+      `;
       await pool.query(notqs, [
         message2,
         false,
         project_id,
         upperItemName,
-        size,
+        size || null,
       ]);
       req.flash("errorMessages", "Allocated amount exceeds BOQ limit");
       return res.redirect("/allocateinv1");
@@ -2433,11 +2449,14 @@ app.post("/allocateinv1", async (req, res) => {
     }
 
     // Insert the entry into allocated_inv table
-    const insertQuery =
-      "INSERT INTO allocated_inv (item_name, Size, project_id, allocated_amount, con_id, warehouse_id, allocate_date) VALUES ($1, $2, $3, $4, $5, $6, $7)";
+    const insertQuery = `
+      INSERT INTO allocated_inv 
+      (item_name, Size, project_id, allocated_amount, con_id, warehouse_id, allocate_date) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `;
     await pool.query(insertQuery, [
       upperItemName,
-      size,
+      size || null,
       project_id,
       amount,
       con_id,
@@ -2446,9 +2465,17 @@ app.post("/allocateinv1", async (req, res) => {
     ]);
 
     // Deduct the allocated amount from the inventory
-    const updateInventoryQuery =
-      'UPDATE warehouse1inventory SET "Qty Required" = "Qty Required" - $1 WHERE "ITEM" = $2 AND "Size" = $3';
-    await pool.query(updateInventoryQuery, [amount, upperItemName, size]);
+    const updateInventoryQuery = `
+      UPDATE warehouse1inventory 
+      SET "Qty Required" = "Qty Required" - $1 
+      WHERE "ITEM" = $2 
+      AND ( ("Size" = $3) OR ("Size" IS NULL AND $3 IS NULL) )
+    `;
+    await pool.query(updateInventoryQuery, [
+      amount,
+      upperItemName,
+      size || null,
+    ]);
     await client.query("COMMIT");
 
     req.flash("successMessage", "Allocation successful");
@@ -2568,10 +2595,10 @@ app.post("/allocateinv2", async (req, res) => {
 
     // Check if the item exists in inventory (case-insensitive)
     const itemExistsQuery =
-      'SELECT * FROM warehouse2inventory WHERE "ITEM" = $1 AND "Size" = $2';
+      'SELECT * FROM warehouse2inventory WHERE "ITEM" = $1 AND ( ("Size" = $2) OR ("Size" IS NULL AND $2 IS NULL) )';
     const itemExistsResult = await pool.query(itemExistsQuery, [
       upperItemName,
-      size,
+      size || null,
     ]);
     if (itemExistsResult.rows.length === 0) {
       req.flash("errorMessages", "Item not found in inventory");
@@ -2583,7 +2610,7 @@ app.post("/allocateinv2", async (req, res) => {
       'SELECT "Qty Required" FROM warehouse2inventory WHERE "ITEM" = $1 AND "Size" = $2';
     const availableQuantityResult = await pool.query(availableQuantityQuery, [
       upperItemName,
-      size,
+      size || null,
     ]);
     const availableQuantity = availableQuantityResult.rows[0]["Qty Required"];
     if (amount > availableQuantity) {
@@ -2593,11 +2620,11 @@ app.post("/allocateinv2", async (req, res) => {
 
     // Check if the allocated amount does not exceed the BOQ limit
     const boqQuery =
-      'SELECT "limit" FROM project_boq WHERE project_id = $1 AND item_name = $2 AND size = $3';
+      'SELECT "limit" FROM project_boq WHERE project_id = $1 AND item_name = $2 AND (size = $3 OR (size IS NULL AND $3 IS NULL))';
     const boqResult = await pool.query(boqQuery, [
       project_id,
       upperItemName,
-      size,
+      size || null,
     ]);
     if (boqResult.rows.length === 0) {
       req.flash(
@@ -2616,7 +2643,7 @@ app.post("/allocateinv2", async (req, res) => {
         false,
         project_id,
         upperItemName,
-        size,
+        size || null,
       ]);
       req.flash("errorMessages", "Allocated amount exceeds BOQ limit");
       return res.redirect("/allocateinv2");
@@ -2640,7 +2667,7 @@ app.post("/allocateinv2", async (req, res) => {
       "INSERT INTO allocated_inv (item_name, Size, project_id, allocated_amount, con_id, warehouse_id, allocate_date) VALUES ($1, $2, $3, $4, $5, $6, $7)";
     await pool.query(insertQuery, [
       upperItemName,
-      size,
+      size || null,
       project_id,
       amount,
       con_id,
@@ -2651,7 +2678,12 @@ app.post("/allocateinv2", async (req, res) => {
     // Deduct the allocated amount from the inventory
     const updateInventoryQuery =
       'UPDATE warehouse2inventory SET "Qty Required" = "Qty Required" - $1 WHERE "ITEM" = $2 AND "Size" = $3';
-    await pool.query(updateInventoryQuery, [amount, upperItemName, size]);
+    await pool.query(updateInventoryQuery, [
+      amount,
+      upperItemName,
+      size || null,
+    ]);
+
     await client.query("COMMIT");
 
     req.flash("successMessage", "Allocation successful");
@@ -2771,10 +2803,10 @@ app.post("/allocateinv3", async (req, res) => {
 
     // Check if the item exists in inventory (case-insensitive)
     const itemExistsQuery =
-      'SELECT * FROM warehouse3inventory WHERE "ITEM" = $1 AND "Size" = $2';
+      'SELECT * FROM warehouse3inventory WHERE "ITEM" = $1 AND ( ("Size" = $2) OR ("Size" IS NULL AND $2 IS NULL) )';
     const itemExistsResult = await pool.query(itemExistsQuery, [
       upperItemName,
-      size,
+      size || null,
     ]);
     if (itemExistsResult.rows.length === 0) {
       req.flash("errorMessages", "Item not found in inventory");
@@ -2786,7 +2818,7 @@ app.post("/allocateinv3", async (req, res) => {
       'SELECT "Qty Required" FROM warehouse3inventory WHERE "ITEM" = $1 AND "Size" = $2';
     const availableQuantityResult = await pool.query(availableQuantityQuery, [
       upperItemName,
-      size,
+      size || null,
     ]);
     const availableQuantity = availableQuantityResult.rows[0]["Qty Required"];
     if (amount > availableQuantity) {
@@ -2796,11 +2828,11 @@ app.post("/allocateinv3", async (req, res) => {
 
     // Check if the allocated amount does not exceed the BOQ limit
     const boqQuery =
-      'SELECT "limit" FROM project_boq WHERE project_id = $1 AND item_name = $2 AND size = $3';
+      'SELECT "limit" FROM project_boq WHERE project_id = $1 AND item_name = $2 AND (size = $3 OR (size IS NULL AND $3 IS NULL))';
     const boqResult = await pool.query(boqQuery, [
       project_id,
       upperItemName,
-      size,
+      size || null,
     ]);
     if (boqResult.rows.length === 0) {
       req.flash(
@@ -2819,7 +2851,7 @@ app.post("/allocateinv3", async (req, res) => {
         false,
         project_id,
         upperItemName,
-        size,
+        size || null,
       ]);
       req.flash("errorMessages", "Allocated amount exceeds BOQ limit");
       return res.redirect("/allocateinv3");
@@ -2843,7 +2875,7 @@ app.post("/allocateinv3", async (req, res) => {
       "INSERT INTO allocated_inv (item_name, Size, project_id, allocated_amount, con_id, warehouse_id, allocate_date) VALUES ($1, $2, $3, $4, $5, $6, $7)";
     await pool.query(insertQuery, [
       upperItemName,
-      size,
+      size || null,
       project_id,
       amount,
       con_id,
@@ -2854,7 +2886,12 @@ app.post("/allocateinv3", async (req, res) => {
     // Deduct the allocated amount from the inventory
     const updateInventoryQuery =
       'UPDATE warehouse3inventory SET "Qty Required" = "Qty Required" - $1 WHERE "ITEM" = $2 AND "Size" = $3';
-    await pool.query(updateInventoryQuery, [amount, upperItemName, size]);
+    await pool.query(updateInventoryQuery, [
+      amount,
+      upperItemName,
+      size || null,
+    ]);
+
     await client.query("COMMIT");
 
     req.flash("successMessage", "Allocation successful");
@@ -3021,7 +3058,7 @@ app.post("/addprojects", async (req, res) => {
 app.post("/addboq", async (req, res) => {
   const { project_id, item_name, size, deno, limit } = req.body;
 
-  if (!project_id || !item_name || !size) {
+  if (!project_id || !item_name) {
     req.flash("errorMessages", "All fields are required.");
     return res.redirect("/addboq");
   }
