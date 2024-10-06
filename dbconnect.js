@@ -1718,7 +1718,6 @@ app.get("/view-item1", async (req, res) => {
   }
 });
 
-
 // app.get('/addinventory3', (req, res) => {
 //   const { receivingId } = req.query;
 //   const errorMessages = req.flash('errorMessages');
@@ -2344,8 +2343,8 @@ app.post("/allocateinv1", async (req, res) => {
     return res.redirect("/allocateinv1");
   }
 
-  if (isNaN(amount) || !Number.isInteger(Number(amount))) {
-    req.flash("errorMessages", "Allocated amount must be an integer.");
+  if (isNaN(amount)) {
+    req.flash("errorMessages", "Allocated amount must be a valid number.");
     return res.redirect("/allocateinv1");
   }
 
@@ -2547,8 +2546,8 @@ app.post("/allocateinv2", async (req, res) => {
     return res.redirect("/allocateinv2");
   }
 
-  if (isNaN(amount) || !Number.isInteger(Number(amount))) {
-    req.flash("errorMessages", "Allocated amount must be an integer.");
+  if (isNaN(amount)) {
+    req.flash("errorMessages", "Allocated amount must be a valid number.");
     return res.redirect("/allocateinv2");
   }
 
@@ -2750,8 +2749,8 @@ app.post("/allocateinv3", async (req, res) => {
     return res.redirect("/allocateinv3");
   }
 
-  if (isNaN(amount) || !Number.isInteger(Number(amount))) {
-    req.flash("errorMessages", "Allocated amount must be an integer.");
+  if (isNaN(amount)) {
+    req.flash("errorMessages", "Allocated amount must be a valid number.");
     return res.redirect("/allocateinv3");
   }
 
