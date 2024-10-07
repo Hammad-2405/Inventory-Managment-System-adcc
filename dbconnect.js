@@ -1129,6 +1129,25 @@ app.get("/addcontractors", (req, res) => {
   res.render("addcontractors", { errorMessages, successMessage });
 });
 
+app.get("/checkProjectType/:projectId", async (req, res) => {
+  const { projectId } = req.params;
+  try {
+    const result = await pool.query(
+      "SELECT is_housing FROM projects WHERE project_id = $1",
+      [projectId]
+    );
+    if (result.rows.length > 0) {
+      const isHousing = result.rows[0].is_housing;
+      res.json({ isHousing });
+    } else {
+      res.status(404).json({ error: "Project not found" });
+    }
+  } catch (error) {
+    console.error("Error checking project type:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 app.get("/warehouse1.html", (req, res) => {
   res.sendFile(path.join(__dirname, "warehouse1.html"));
 });
@@ -2978,6 +2997,8 @@ app.post("/addprojects", async (req, res) => {
     warehouseId,
     projectBudget,
     projectDeadline,
+    isHousingProject, // This will be "yes" or "no"
+    noOfHouses, // This is the number of houses, only relevant if isHousingProject is "yes"
     item_name,
     size,
     deno,
@@ -2986,28 +3007,32 @@ app.post("/addprojects", async (req, res) => {
 
   // Validation
   const errors = [];
+
+  // Validate warehouse ID
   if (isNaN(parseInt(warehouseId))) {
     errors.push("Warehouse ID must be an integer.");
   }
+
+  // Validate project budget
   if (isNaN(parseFloat(projectBudget))) {
     errors.push("Project budget must be a number.");
   }
-  // if (Array.isArray(limit)) {
-  //   limit.forEach(l => {
-  //     if (isNaN(parseInt(l))) {
-  //       errors.push('Limit must be an integer.');
-  //     }
-  //   });
-  // } else {
-  //   if (isNaN(parseInt(limit))) {
-  //     errors.push('Limit must be an integer.');
-  //   }
-  // }
 
+  // Validate deadline date
   const currentDate = new Date();
   const deadlineDate = new Date(projectDeadline);
   if (deadlineDate < currentDate) {
     errors.push("Project deadline must not be before the current date.");
+  }
+
+  // Validate if housing project is selected
+  if (
+    isHousingProject === "yes" &&
+    (isNaN(parseInt(noOfHouses)) || parseInt(noOfHouses) <= 0)
+  ) {
+    errors.push(
+      "Number of houses must be a positive integer if this is a housing project."
+    );
   }
 
   if (errors.length > 0) {
@@ -3020,26 +3045,36 @@ app.post("/addprojects", async (req, res) => {
     await pool.query("BEGIN");
 
     // Insert the new project and return the project_id
-    const insertProjectQuery = `INSERT INTO projects (project_name, warehouse_id, project_budget, project_deadline) VALUES ($1, $2, $3, $4) RETURNING project_id`;
+    const insertProjectQuery = `INSERT INTO projects (project_name, warehouse_id, project_budget, project_deadline, is_housing, no_of_houses) VALUES ($1, $2, $3, $4, $5, $6) RETURNING project_id`;
+
+    // Convert isHousingProject to boolean and handle noOfHouses for non-housing projects
+    const isHousing = isHousingProject === "yes";
+    const houses = isHousing ? noOfHouses : null;
+
     const projectResult = await pool.query(insertProjectQuery, [
       projectName,
       warehouseId,
       projectBudget,
       projectDeadline,
+      isHousing,
+      houses, // Insert no_of_houses only if it's a housing project, else null
     ]);
+
     const projectId = projectResult.rows[0].project_id;
 
-    // Insert the BOQ entries
-    // if (Array.isArray(item_name)) {
-    //   for (let i = 0; i < item_name.length; i++) {
-    //     const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-    //     await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
-    //   }
-    // } else {
-    //   // Handle case when there's only one set of BOQ fields
-    //   const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-    //   await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
-    // }
+    // Insert the BOQ entries if provided
+    // Uncomment this block if you're dealing with multiple items
+    /*
+    if (Array.isArray(item_name)) {
+      for (let i = 0; i < item_name.length; i++) {
+        const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+        await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
+      }
+    } else {
+      const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
+      await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
+    }
+    */
 
     // Commit the transaction
     await pool.query("COMMIT");
@@ -3063,9 +3098,9 @@ app.post("/addboq", async (req, res) => {
     return res.redirect("/addboq");
   }
   const errors = [];
-  if (isNaN(parseInt(limit))) {
-    errors.push("Limit must be an integer.");
-  }
+  // if (isNaN(parseInt(limit))) {
+  //   errors.push("Limit must be an integer.");
+  // }
   if (isNaN(parseInt))
     if (errors.length > 0) {
       req.flash("errorMessages", errors);
@@ -3084,7 +3119,7 @@ app.post("/addboq", async (req, res) => {
     await pool.query(insertBoqQuery, [
       project_id,
       upperItemName,
-      size,
+      size ? size : null,
       deno,
       limit,
     ]);
@@ -3103,37 +3138,76 @@ app.post("/addboq", async (req, res) => {
 });
 
 app.post("/addcontractors", async (req, res) => {
-  const { conName, projectID, contact } = req.body;
+  const { conName, projectID, contact, noOfHouses } = req.body;
 
   // Validation
   const errors = [];
-
   const upperconName = conName.toUpperCase();
 
   try {
     // Start a transaction
     await pool.query("BEGIN");
 
-    // Insert the new project and return the project_id
-    const insertProjectQuery = `INSERT INTO contractors (con_name, project_id, contact) VALUES ($1, $2, $3)`;
-    const projectResult = await pool.query(insertProjectQuery, [
+    // Check if the project is a housing project by checking a housing flag or relevant field in the projects table
+    const projectQuery =
+      "SELECT no_of_houses, is_housing FROM projects WHERE project_id = $1";
+    const projectResult = await pool.query(projectQuery, [projectID]);
+
+    if (projectResult.rows.length === 0) {
+      // If project doesn't exist, rollback and return an error
+      await pool.query("ROLLBACK");
+      req.flash("errorMessages", ["Project not found"]);
+      return res.redirect("/addcontractors");
+    }
+
+    const project = projectResult.rows[0];
+    const totalHouses = project.no_of_houses;
+    const isHousing = project.is_housing;
+
+    if (isHousing) {
+      if (!noOfHouses || isNaN(noOfHouses)) {
+        // If no_of_houses is not provided for a housing project, throw an error
+        await pool.query("ROLLBACK");
+        req.flash("errorMessages", [
+          "Number of houses must be provided for housing projects",
+        ]);
+        return res.redirect("/addcontractors");
+      }
+
+      // Fetch the current total allocated houses for this project
+      const allocatedHousesQuery = `
+        SELECT COALESCE(SUM(no_of_houses), 0) AS total_allocated 
+        FROM contractors 
+        WHERE project_id = $1
+      `;
+      const allocatedResult = await pool.query(allocatedHousesQuery, [
+        projectID,
+      ]);
+      const totalAllocated = allocatedResult.rows[0].total_allocated;
+
+      // Check if the current allocation exceeds the total available houses
+      const remainingHouses = totalHouses - totalAllocated;
+      if (noOfHouses > remainingHouses) {
+        // Rollback if allocated houses exceed remaining houses
+        await pool.query("ROLLBACK");
+        req.flash("errorMessages", [
+          `Allocation exceeds available houses. Only ${remainingHouses} houses are available for allocation.`,
+        ]);
+        return res.redirect("/addcontractors");
+      }
+    }
+
+    // Insert the new contractor into the contractors table
+    const insertContractorQuery = `
+      INSERT INTO contractors (con_name, project_id, contact, no_of_houses) 
+      VALUES ($1, $2, $3, $4)
+    `;
+    await pool.query(insertContractorQuery, [
       upperconName,
       projectID,
       contact,
+      isHousing ? noOfHouses : null, // Only insert no_of_houses if it's a housing project
     ]);
-    // const projectId = projectResult.rows[0].project_id;
-
-    // Insert the BOQ entries
-    // if (Array.isArray(item_name)) {
-    //   for (let i = 0; i < item_name.length; i++) {
-    //     const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-    //     await pool.query(insertBoqQuery, [projectId, item_name[i], size[i], deno[i], limit[i]]);
-    //   }
-    // } else {
-    //   // Handle case when there's only one set of BOQ fields
-    //   const insertBoqQuery = `INSERT INTO project_boq (project_id, item_name, size, deno, "limit") VALUES ($1, $2, $3, $4, $5)`;
-    //   await pool.query(insertBoqQuery, [projectId, item_name, size, deno, limit]);
-    // }
 
     // Commit the transaction
     await pool.query("COMMIT");
@@ -3143,8 +3217,8 @@ app.post("/addcontractors", async (req, res) => {
   } catch (error) {
     // Rollback the transaction in case of error
     await pool.query("ROLLBACK");
-    console.error("Error adding project:", error);
-    req.flash("errorMessages", ["Error adding project"]);
+    console.error("Error adding contractor:", error);
+    req.flash("errorMessages", ["Error adding contractor"]);
     res.redirect("/addcontractors");
   }
 });

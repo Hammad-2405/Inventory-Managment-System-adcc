@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Contractors</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -115,7 +116,7 @@
         .add-field-btn {
             margin-bottom: 20px;
         }
-        
+
         .flash-message {
             color: red;
             font-size: 14px;
@@ -158,9 +159,10 @@
     </div>
 
     <div class="container mt-3">
-        <a href="/qsdashboard.html" class="btn btn-primary" style="margin-top: 100px; margin-left: -60px; font-size: 20px;">
-        
-            <b>Back to Dashboard</b></a>
+        <a href="/qsdashboard.html" class="btn btn-primary"
+            style="margin-top: 100px; margin-left: -60px; font-size: 20px;">
+            <b>Back to Dashboard</b>
+        </a>
     </div>
 
     <section class="addinventoryform">
@@ -168,61 +170,74 @@
             <h1><b>Enter Contractor Details</b></h1>
         </div>
 
-        <% if (errorMessages && errorMessages.length > 0) { %>
+        <% if (errorMessages && errorMessages.length> 0) { %>
             <div class="error-messages">
-                <% errorMessages.forEach(message => { %>
-                    <div class="error-message flash-message"><%= message %></div>
-                <% }); %>
+                <% errorMessages.forEach(message=> { %>
+                    <div class="error-message flash-message">
+                        <%= message %>
+                    </div>
+                    <% }); %>
             </div>
-        <% } %>
+            <% } %>
 
-        <% if (successMessage && successMessage.length > 0) { %>
-            <div class="success-message flash-message"><%= successMessage %></div>
-        <% } %>
+                <% if (successMessage && successMessage.length> 0) { %>
+                    <div class="success-message flash-message">
+                        <%= successMessage %>
+                    </div>
+                    <% } %>
 
-        <form id="projectForm" action="/addcontractors" method="POST">
-            <div class="input-group">
-                <label for="conName">Contractor Name</label>
-                <input type="text" id="conName" name="conName" placeholder="Contractor Name" required>
-            </div>
-            <div class="input-group">
-                <label for="projectID">Project ID</label>
-                <input type="number" id="projectID" name="projectID" placeholder="Project ID" required>
-            </div>
-            <div class="input-group">
-                <label for="contact">Contact Information</label>
-                <input type="text" id="contact" name="contact" placeholder="Contact" required>
-            </div>
-            <div id="additionalFields"></div>
-            <!-- <button type="button" class="add-field-btn" onclick="addFields()">Add BOQ For Project</button>-->
-            <input type="submit" value="Submit" class="login-btn">
-        </form>
+                        <form id="projectForm" action="/addcontractors" method="POST">
+                            <div class="input-group">
+                                <label for="conName">Contractor Name</label>
+                                <input type="text" id="conName" name="conName" placeholder="Contractor Name" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="projectID">Project ID</label>
+                                <input type="number" id="projectID" name="projectID" placeholder="Project ID" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="contact">Contact Information</label>
+                                <input type="text" id="contact" name="contact" placeholder="Contact" required>
+                            </div>
 
-        <script>
-            function addFields() {
-                const container = document.getElementById('additionalFields');
-                const fields = ['Item Name', 'Size', 'Deno', 'Limit'];
+                            <div id="additionalFields"></div> <!-- For dynamic fields like Number of Houses -->
 
-                fields.forEach(fieldName => {
-                    const fieldWrapper = document.createElement('div');
-                    fieldWrapper.classList.add('input-group');
+                            <input type="submit" value="Submit" class="login-btn">
+                        </form>
 
-                    const label = document.createElement('label');
-                    label.textContent = fieldName;
-                    fieldWrapper.appendChild(label);
+                        <script>
+                            document.getElementById('projectID').addEventListener('input', function () {
+                                const projectId = this.value;
+                                if (projectId) {
+                                    fetch(`/checkProjectType/${projectId}`)
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const additionalFields = document.getElementById('additionalFields');
+                                            additionalFields.innerHTML = ''; // Clear previous dynamic fields
 
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.name = fieldName.toLowerCase().replace(' ', '_');
-                    input.placeholder = fieldName;
-                    fieldWrapper.appendChild(input);
+                                            if (data.isHousing) {
+                                                const fieldWrapper = document.createElement('div');
+                                                fieldWrapper.classList.add('input-group');
 
-                    container.appendChild(fieldWrapper);
-                });
-            }
-        </script>
+                                                const label = document.createElement('label');
+                                                label.textContent = 'Allocate Houses';
+                                                fieldWrapper.appendChild(label);
+
+                                                const input = document.createElement('input');
+                                                input.type = 'number';
+                                                input.name = 'noOfHouses';
+                                                input.placeholder = 'Allocate Houses';
+                                                input.required = true;
+                                                fieldWrapper.appendChild(input);
+
+                                                additionalFields.appendChild(fieldWrapper);
+                                            }
+                                        })
+                                        .catch(error => console.error('Error fetching project type:', error));
+                                }
+                            });
+                        </script>
     </section>
 </body>
-
 
 </html>

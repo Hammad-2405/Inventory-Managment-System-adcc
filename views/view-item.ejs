@@ -1,66 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Item Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #3498db;
-            --secondary-color: #2ecc71;
-            --text-color: #333;
-            --background-color: #f4f4f4;
-            --card-background: #fff;
-        }
-
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: "Poppins", sans-serif;
             padding: 20px;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            transition: background-color 0.3s ease;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            background-color: #f9f9f9;
+            color: #333;
         }
 
         h1 {
             text-align: center;
             font-size: 2.5em;
             margin-bottom: 30px;
-            color: var(--primary-color);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #444;
+            font-weight: bold;
         }
 
         .item-section {
-            background-color: var(--card-background);
+            background-color: #fff;
+            border: 1px solid #ddd;
             border-radius: 10px;
-            padding: 25px;
+            padding: 20px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Adjustable gap between item boxes */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Add shadow for a professional look */
+            transition: transform 0.3s ease;
+            /* Adds a subtle hover effect */
         }
 
         .item-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            /* Slight lift effect on hover */
         }
 
         .item-heading {
             font-size: 1.8em;
-            color: var(--primary-color);
+            color: #fd7e14;
             margin-bottom: 15px;
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            font-weight: 700;
+            border-bottom: 2px solid #fdbe33;
+            padding-bottom: 5px;
+            font-weight: bold;
         }
 
         .item-quantity,
@@ -72,107 +57,116 @@
 
         .quantity-label,
         .allocation-label {
-            font-weight: 700;
-            color: var(--primary-color);
+            font-weight: bold;
+            color: #555;
         }
 
         .quantity-value,
         .allocation-value {
-            color: var(--text-color);
+            color: #000;
         }
 
         .allocation-section {
-            margin-top: 20px;
+            margin-top: 30px;
             padding-left: 15px;
-            border-left: 3px solid var(--secondary-color);
-            padding-bottom: 15px;
-            transition: background-color 0.3s ease;
+            border-left: 3px solid #fdbe33;
+            padding-bottom: 20px;
         }
 
-        .allocation-section:hover {
-            background-color: rgba(46, 204, 113, 0.1);
+        .allocation-details {
+            margin-bottom: 10px;
         }
 
         .summary-heading {
             font-size: 1.4em;
-            color: var(--primary-color);
-            margin-top: 25px;
-            border-bottom: 1px solid var(--secondary-color);
+            color: #444;
+            margin-top: 20px;
+            border-bottom: 1px solid #ccc;
             padding-bottom: 10px;
-            font-weight: 700;
+            font-weight: bold;
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            .item-section {
-                padding: 15px;
-            }
-
-            .item-heading {
-                font-size: 1.5em;
-            }
-
-            .item-quantity,
-            .allocation-details {
-                font-size: 1em;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --primary-color: #3498db;
-                --secondary-color: #2ecc71;
-                --text-color: #f4f4f4;
-                --background-color: #2c3e50;
-                --card-background: #34495e;
-            }
+        .totals {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #444;
+            margin-top: 10px;
+            padding-left: 20px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <h1><%= itemDetails[0]['ITEM'] %></h1>
-        <% itemDetails.forEach(item => { %>
+    <h1>
+        <%= itemDetails[0]['ITEM'] %>
+    </h1>
+
+    <% itemDetails.forEach(item=> {
+        // Calculate total allocated amount for the current item and size
+        let totalAllocated = allocatedInventory
+        .filter(allocation => allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size'])
+        .reduce((sum, allocation) => sum + allocation['allocated_amount'], 0);
+        %>
         <div class="item-section">
-            <div class="item-heading">Size: <%= item['Size'] %></div>
-            <div class="item-quantity">
-                <span class="quantity-label">Quantity:</span>
-                <span class="quantity-value"><%= item['Qty Required'] %> <%= item['DENO'] %></span>
+            <div class="item-heading">Size: <%= item['Size'] %>
             </div>
-            <div class="summary-heading">Allocation Summary</div>
-            <% allocatedInventory.forEach(allocation => { %>
-                <% if (allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size']) { %>
+
+            <!-- Show total and remaining quantities -->
+            <div class="item-quantity">
+                <span class="quantity-label">Total Quantity:</span>
+                <span class="quantity-value">
+                    <%= item['Qty Required'] + totalAllocated%>
+                </span>
+                <span>
+                    <%= item['DENO'] %>
+                </span>
+            </div>
+
+            <div class="item-quantity">
+                <span class="quantity-label">Total Remaining:</span>
+                <span class="quantity-value">
+                    <%= item['Qty Required'] %>
+                </span>
+                <span>
+                    <%= item['DENO'] %>
+                </span>
+            </div>
+
+            <div class="summary-heading"><b>Allocation Summary</b></div>
+
+            <% allocatedInventory.forEach(allocation=> {
+                if (allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size']) { %>
                 <div class="allocation-section">
                     <div class="allocation-details">
                         <span class="allocation-label">Project Name: </span>
                         <span class="allocation-value">
-                            <%= projects.find(p => p.project_id === allocation['project_id']).project_name %>
+                            <%= projects.find(p=> p.project_id === allocation['project_id']).project_name %>
                         </span>
                     </div>
                     <div class="allocation-details">
                         <span class="allocation-label">Contractor Name: </span>
                         <span class="allocation-value">
-                            <%= contractors.find(c => c.con_id === allocation['con_id']).con_name %>
+                            <%= contractors.find(c=> c.con_id === allocation['con_id']).con_name %>
                         </span>
                     </div>
                     <div class="allocation-details">
                         <span class="allocation-label">Allocated Amount: </span>
-                        <span class="allocation-value"><%= allocation['allocated_amount'] %> <%= item['DENO'] %></span>
+                        <span class="allocation-value">
+                            <%= allocation['allocated_amount'] %>
+                        </span>
                     </div>
                     <div class="allocation-details">
                         <span class="allocation-label">Allocated Date: </span>
                         <span class="allocation-value">
-                            <%= new Date(allocation['allocate_date']).toLocaleDateString('en-GB', { year: 'numeric', month: 'numeric', day: 'numeric' }) %>
+                            <%= new Date(allocation['allocate_date']).toLocaleDateString('en-GB', { year: 'numeric' ,
+                                month: 'numeric' , day: 'numeric' }) %>
                         </span>
                     </div>
                 </div>
                 <% } %>
-            <% }); %>
+                    <% }); %>
         </div>
         <% }); %>
-    </div>
 </body>
+
 </html>

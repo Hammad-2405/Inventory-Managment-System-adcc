@@ -1,136 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Item Details</title>
-    <style>
-      body {
-        font-family: "Poppins", sans-serif;
-        padding: 20px;
-        background-color: #f9f9f9;
-        color: #333;
-      }
 
-      h1 {
-        text-align: center;
-        font-size: 2.5em;
-        margin-bottom: 30px;
-        color: #444;
-        font-weight: bold;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Item Details</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
 
-      .item-section {
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 30px; /* Adjustable gap between item boxes */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for a professional look */
-        transition: transform 0.3s ease; /* Adds a subtle hover effect */
-      }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      color: #444;
+      font-weight: bold;
+    }
 
-      .item-section:hover {
-        transform: translateY(-5px); /* Slight lift effect on hover */
-      }
+    .item-section {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+      /* Adjustable gap between item boxes */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      /* Add shadow for a professional look */
+      transition: transform 0.3s ease;
+      /* Adds a subtle hover effect */
+    }
 
-      .item-heading {
-        font-size: 1.8em;
-        color: #fd7e14;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #fdbe33;
-        padding-bottom: 5px;
-        font-weight: bold;
-      }
+    .item-section:hover {
+      transform: translateY(-5px);
+      /* Slight lift effect on hover */
+    }
 
-      .item-quantity,
-      .allocation-details {
-        padding-left: 20px;
-        margin-bottom: 15px;
-        font-size: 1.1em;
-      }
+    .item-heading {
+      font-size: 1.8em;
+      color: #fd7e14;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #fdbe33;
+      padding-bottom: 5px;
+      font-weight: bold;
+    }
 
-      .quantity-label,
-      .allocation-label {
-        font-weight: bold;
-        color: #555;
-      }
+    .item-quantity,
+    .allocation-details {
+      padding-left: 20px;
+      margin-bottom: 15px;
+      font-size: 1.1em;
+    }
 
-      .quantity-value,
-      .allocation-value {
-        color: #000;
-      }
+    .quantity-label,
+    .allocation-label {
+      font-weight: bold;
+      color: #555;
+    }
 
-      .allocation-section {
-        margin-top: 30px;
-        padding-left: 15px;
-        border-left: 3px solid #fdbe33;
-        padding-bottom: 20px;
-      }
+    .quantity-value,
+    .allocation-value {
+      color: #000;
+    }
 
-      .allocation-details {
-        margin-bottom: 10px;
-      }
+    .allocation-section {
+      margin-top: 30px;
+      padding-left: 15px;
+      border-left: 3px solid #fdbe33;
+      padding-bottom: 20px;
+    }
 
-      .summary-heading {
-        font-size: 1.4em;
-        color: #444;
-        margin-top: 20px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-        font-weight: bold;
-      }
-    </style>
-  </head>
+    .allocation-details {
+      margin-bottom: 10px;
+    }
 
-  <body>
-    <h1><%= itemDetails[0]['ITEM'] %></h1>
+    .summary-heading {
+      font-size: 1.4em;
+      color: #444;
+      margin-top: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      font-weight: bold;
+    }
 
-    <% itemDetails.forEach(item => { %>
+    .totals {
+      font-weight: bold;
+      font-size: 1.2em;
+      color: #444;
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    <%= itemDetails[0]['ITEM'] %>
+  </h1>
+
+  <% itemDetails.forEach(item=> {
+    // Calculate total allocated amount for the current item and size
+    let totalAllocated = allocatedInventory
+    .filter(allocation => allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size'])
+    .reduce((sum, allocation) => sum + allocation['allocated_amount'], 0);
+    %>
     <div class="item-section">
-      <div class="item-heading">Size: <%= item['Size'] %></div>
+      <div class="item-heading">Sizeeeeeeeeeeee: <%= item['Size'] %>
+      </div>
+
+      <!-- Show total and remaining quantities -->
       <div class="item-quantity">
-        <span class="quantity-label">Quantity:</span>
-        <span class="quantity-value"><%= item['Qty Required'] %></span>
+        <span class="quantity-label">Total Quantity:</span>
+        <span class="quantity-value">
+          <%= item['Qty Required'] + totalAllocated%>
+        </span>
+      </div>
+
+      <div class="item-quantity">
+        <span class="quantity-label">Total Remaining:</span>
+        <span class="quantity-value">
+          <%= item['Qty Required'] %>
+        </span>
       </div>
 
       <div class="summary-heading"><b>Allocation Summary</b></div>
 
-      <% allocatedInventory.forEach(allocation => { %> <% if
-      (allocation['item_name'] === item['ITEM'] && allocation['size'] ===
-      item['Size']) { %>
-      <div class="allocation-section">
-        <div class="allocation-details">
-          <span class="allocation-label">Project Name: </span>
-          <span class="allocation-value">
-            <%= projects.find(p => p.project_id ===
-            allocation['project_id']).project_name %>
-          </span>
+      <% allocatedInventory.forEach(allocation=> {
+        if (allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size']) { %>
+        <div class="allocation-section">
+          <div class="allocation-details">
+            <span class="allocation-label">Project Name: </span>
+            <span class="allocation-value">
+              <%= projects.find(p=> p.project_id === allocation['project_id']).project_name %>
+            </span>
+          </div>
+          <div class="allocation-details">
+            <span class="allocation-label">Contractor Name: </span>
+            <span class="allocation-value">
+              <%= contractors.find(c=> c.con_id === allocation['con_id']).con_name %>
+            </span>
+          </div>
+          <div class="allocation-details">
+            <span class="allocation-label">Allocated Amount: </span>
+            <span class="allocation-value">
+              <%= allocation['allocated_amount'] %>
+            </span>
+          </div>
+          <div class="allocation-details">
+            <span class="allocation-label">Allocated Date: </span>
+            <span class="allocation-value">
+              <%= new Date(allocation['allocate_date']).toLocaleDateString('en-GB', { year: 'numeric' , month: 'numeric'
+                , day: 'numeric' }) %>
+            </span>
+          </div>
         </div>
-        <div class="allocation-details">
-          <span class="allocation-label">Contractor Name: </span>
-          <span class="allocation-value">
-            <%= contractors.find(c => c.con_id ===
-            allocation['con_id']).con_name %>
-          </span>
-        </div>
-        <div class="allocation-details">
-          <span class="allocation-label">Allocated Amount: </span>
-          <span class="allocation-value"
-            ><%= allocation['allocated_amount'] %></span
-          >
-        </div>
-        <div class="allocation-details">
-          <span class="allocation-label">Allocated Date: </span>
-          <span class="allocation-value">
-            <%= new
-            Date(allocation['allocate_date']).toLocaleDateString('en-GB', {
-            year: 'numeric', month: 'numeric', day: 'numeric' }) %>
-          </span>
-        </div>
-      </div>
-      <% } %> <% }); %>
+        <% } %>
+          <% }); %>
     </div>
     <% }); %>
-  </body>
+</body>
+
 </html>
