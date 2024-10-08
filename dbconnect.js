@@ -1722,7 +1722,7 @@ app.get("/view-item1", async (req, res) => {
     const contractors = contractorsResult.rows;
 
     // Render the view with item details, allocated inventory details, project names, and contractor names
-    res.render("view-item", {
+    res.render("view-item1", {
       itemDetails,
       allocatedInventory,
       projects,
