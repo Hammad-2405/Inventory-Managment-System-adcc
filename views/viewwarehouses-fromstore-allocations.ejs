@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Store Dashboard</title>
+    <title>Chooses Warehouse</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
@@ -16,21 +16,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background: url("img/pic14.jpg") no-repeat center center fixed;
+        background: url("img/pic11.jpg") no-repeat center center fixed;
         background-size: cover;
       }
-
       .dashboard-container {
         display: flex;
-        flex-wrap: wrap;
-        /* Allow items to wrap to the next line */
+        flex-wrap: wrap; /* Allow items to wrap to the next line */
         justify-content: center;
-        margin-top: 100px;
-        /* Adjusted margin-top for better view */
-        max-width: 1000px;
-        /* Max width to control when wrapping occurs */
+        margin-top: 100px; /* Adjusted margin-top for better view */
+        max-width: 1000px; /* Max width to control when wrapping occurs */
       }
-
       .dashboard-link {
         background-color: #fdbe33;
         color: black;
@@ -38,32 +33,24 @@
         border: none;
         padding: 20px;
         margin: 10px;
-        width: 210px;
-        /* Adjusted width for icon and text */
-        height: 120px;
-        /* Fixed height for consistency */
+        width: 210px; /* Adjusted width for icon and text */
+        height: 120px; /* Fixed height for consistency */
         display: flex;
-        align-items: center;
-        /* Center items vertically */
+        align-items: center; /* Center items vertically */
         text-decoration: none;
-        font-size: 23px;
-        /* Adjusted font size */
+        font-size: 23px; /* Adjusted font size */
         border-radius: 10px;
         cursor: pointer;
         font-weight: bold;
         transition: background-color 0.3s ease;
       }
-
       .dashboard-link:hover {
         background-color: #d29000;
       }
-
       .dashboard-link img {
-        width: 50px;
-        /* Adjust size of icons */
+        width: 50px; /* Adjust size of icons */
         height: 50px;
-        margin-right: 20px;
-        /* Space between icon and text */
+        margin-right: 20px; /* Space between icon and text */
       }
 
       .navBox {
@@ -121,69 +108,35 @@
 
       @media (max-width: 750px) {
         .dashboard-container {
-          flex-direction: column;
-          /* Stack items vertically on smaller screens */
+          flex-direction: column; /* Stack items vertically on smaller screens */
         }
       }
     </style>
   </head>
-
   <body>
     <div class="navBox">
       <div class="navyImage">
         <img src="img/pic2.png" alt="NavyLogo" />
       </div>
       <div class="adcc">
-        <h1>ADCC-Store Dashboard</h1>
+        <h1><b>Choose Warehouse</b></h1>
       </div>
       <div class="adccImage">
         <img src="img/pic2.png" alt="ADCCLogo" />
       </div>
     </div>
     <div class="dashboard-container">
-      <a
-        href="viewwarehouses-fromstore"
-        class="dashboard-link"
-        onclick="viewScorecard()"
-      >
-        <img src="img/pic20.png" alt="View Warehouses Icon" />
-        View Projects
+      <a href="viewwarehouse1-allocations" class="dashboard-link">
+        <img src="img/pic20.png" alt="Warehouse Icon" />
+        Mauripur
       </a>
-      <a href="receivinginventory" class="dashboard-link" onclick="logout()">
-        <img src="img/pic22.png" alt="View Inventory Icon" />
-        Issue Inventory
+      <a href="viewwarehouse2-allocations" class="dashboard-link">
+        <img src="img/pic21.png" alt="Warehouse Icon" />
+        Gharo
       </a>
-      <a href="itemsissued" class="dashboard-link" onclick="logout()">
-        <img src="img/pic20.png" alt="View Warehouses Icon" />
-        Items Issued
-      </a>
-      <a
-        href="viewwarehouses-fromstore-allocations"
-        class="dashboard-link"
-        onclick="logout()"
-      >
-        <img src="img/pic22.png" alt="View Warehouses Icon" />
-        Delete Allocations
-      </a>
-      <a
-        href="viewwarehouses-for-inventory.html"
-        class="dashboard-link"
-        onclick="logout()"
-      >
-        <img src="img/pic20.png" alt="View Inventory Icon" />
-        View Inventory
-      </a>
-      <a href="vendordetails" class="dashboard-link" onclick="logout()">
-        <img src="img/pic22.png" alt="View Inventory Icon" />
-        Vendors
-      </a>
-      <a href="notstore" class="dashboard-link" onclick="viewProgress()">
-        <img src="img/pic24.png" alt="Notifications Icon" />
-        Notifications
-      </a>
-      <a href="/" class="dashboard-link" onclick="viewProgress()">
-        <img src="img/logout.png" alt="Logout Icon" />
-        Logout
+      <a href="viewwarehouse3-allocations" class="dashboard-link">
+        <img src="img/pic23.png" alt="Warehouse Icon" />
+        Anchorage
       </a>
     </div>
   </body>

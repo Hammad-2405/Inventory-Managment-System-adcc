@@ -667,6 +667,83 @@ app.get("/viewwarehouses-fromstore", async (req, res) => {
   }
 });
 
+app.get("/viewwarehouses-fromstore-allocations", async (req, res) => {
+  try {
+    // Fetch warehouses from the database
+    const result = await pool.query("SELECT * FROM warehouses");
+    const warehouses = result.rows;
+
+    // Render the viewwarehouses page and pass the warehouses data
+    res.render("viewwarehouses-fromstore-allocations", { warehouses });
+  } catch (error) {
+    console.error("Error fetching warehouses:", error);
+    res.status(500).send("Error fetching warehouses");
+  }
+});
+
+app.get("/viewwarehouse1-allocations", async (req, res) => {
+  try {
+    // Fetch allocations from 'allocated_inv' table where warehouse_id = 1
+    const allocations = await pool.query(`
+          SELECT * 
+          FROM allocated_inv 
+          INNER JOIN projects ON allocated_inv.project_id = projects.project_id
+          WHERE allocated_inv.warehouse_id = 1
+      `);
+
+    // Render the EJS page and pass the data
+    res.render("viewwarehouse1-allocations", {
+      allocations: allocations.rows,
+      message: req.query.message,
+    });
+  } catch (error) {
+    console.error("Error fetching allocations: ", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get("/viewwarehouse2-allocations", async (req, res) => {
+  try {
+    // Fetch allocations from 'allocated_inv' table where warehouse_id = 1
+    const allocations = await pool.query(`
+          SELECT * 
+          FROM allocated_inv 
+          INNER JOIN projects ON allocated_inv.project_id = projects.project_id
+          WHERE allocated_inv.warehouse_id = 2
+      `);
+
+    // Render the EJS page and pass the data
+    res.render("viewwarehouse2-allocations", {
+      allocations: allocations.rows,
+      message: req.query.message,
+    });
+  } catch (error) {
+    console.error("Error fetching allocations: ", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+app.get("/viewwarehouse3-allocations", async (req, res) => {
+  try {
+    // Fetch allocations from 'allocated_inv' table where warehouse_id = 1
+    const allocations = await pool.query(`
+          SELECT * 
+          FROM allocated_inv 
+          INNER JOIN projects ON allocated_inv.project_id = projects.project_id
+          WHERE allocated_inv.warehouse_id = 3
+      `);
+
+    // Render the EJS page and pass the data
+    res.render("viewwarehouse3-allocations", {
+      allocations: allocations.rows,
+      message: req.query.message,
+    });
+  } catch (error) {
+    console.error("Error fetching allocations: ", error);
+    res.status(500).send("Server Error");
+  }
+});
+
 app.get("/viewwarehouse1", async (req, res) => {
   try {
     // Fetch projects of Warehouse 1 from the database
@@ -2273,6 +2350,165 @@ app.post("/transfersalaryconfirmed", async (req, res) => {
     await client.query("ROLLBACK");
     console.error("Error transferring salary:", error);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+app.post("/deleteAllocation1", async (req, res) => {
+  const { allocationId, itemName, size, allocatedAmount } = req.body;
+
+  try {
+    // Start transaction
+    await pool.query("BEGIN");
+
+    // Delete the allocation from the 'allocated_inv' table
+    const deleteResult = await pool.query(
+      "DELETE FROM allocated_inv WHERE allocation_id = $1 RETURNING *",
+      [allocationId]
+    );
+
+    // Check if deletion was successful
+    if (deleteResult.rowCount === 0) {
+      throw new Error(
+        `No allocation found with allocation_id = ${allocationId}`
+      );
+    } else {
+      console.log(`Allocation deleted: `, deleteResult.rows[0]);
+    }
+
+    // Update the 'warehouse3inventory' by adding the allocated amount back to 'Qty Required'
+    const updateResult = await pool.query(
+      'UPDATE warehouse1inventory SET "Qty Required" = "Qty Required" + $1 WHERE "ITEM" = $2 AND "Size" = $3 RETURNING *',
+      [allocatedAmount, itemName, size]
+    );
+
+    // Check if update was successful
+    if (updateResult.rowCount === 0) {
+      throw new Error(
+        `No matching item in warehouse1inventory for ITEM = ${itemName} and Size = ${size}`
+      );
+    } else {
+      console.log(`Warehouse inventory updated: `, updateResult.rows[0]);
+    }
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.redirect(
+      `/viewwarehouse1-allocations?message=Allocation deleted successfully.`
+    );
+  } catch (error) {
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+    console.error(err);
+    res.redirect(
+      "/viewwarehouse1-allocations?message=Failed to delete allocation."
+    );
+  }
+});
+
+app.post("/deleteAllocation2", async (req, res) => {
+  const { allocationId, itemName, size, allocatedAmount } = req.body;
+
+  try {
+    // Start transaction
+    await pool.query("BEGIN");
+
+    // Delete the allocation from the 'allocated_inv' table
+    const deleteResult = await pool.query(
+      "DELETE FROM allocated_inv WHERE allocation_id = $1 RETURNING *",
+      [allocationId]
+    );
+
+    // Check if deletion was successful
+    if (deleteResult.rowCount === 0) {
+      throw new Error(
+        `No allocation found with allocation_id = ${allocationId}`
+      );
+    } else {
+      console.log(`Allocation deleted: `, deleteResult.rows[0]);
+    }
+
+    // Update the 'warehouse3inventory' by adding the allocated amount back to 'Qty Required'
+    const updateResult = await pool.query(
+      'UPDATE warehouse2inventory SET "Qty Required" = "Qty Required" + $1 WHERE "ITEM" = $2 AND "Size" = $3 RETURNING *',
+      [allocatedAmount, itemName, size]
+    );
+
+    // Check if update was successful
+    if (updateResult.rowCount === 0) {
+      throw new Error(
+        `No matching item in warehouse2inventory for ITEM = ${itemName} and Size = ${size}`
+      );
+    } else {
+      console.log(`Warehouse inventory updated: `, updateResult.rows[0]);
+    }
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.redirect(
+      `/viewwarehouse2-allocations?message=Allocation deleted successfully.`
+    );
+  } catch (error) {
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+    console.error(err);
+    res.redirect(
+      "/viewwarehouse2-allocations?message=Failed to delete allocation."
+    );
+  }
+});
+
+app.post("/deleteAllocation3", async (req, res) => {
+  const { allocationId, itemName, size, allocatedAmount } = req.body;
+
+  try {
+    // Start transaction
+    await pool.query("BEGIN");
+
+    // Delete the allocation from the 'allocated_inv' table
+    const deleteResult = await pool.query(
+      "DELETE FROM allocated_inv WHERE allocation_id = $1 RETURNING *",
+      [allocationId]
+    );
+
+    // Check if deletion was successful
+    if (deleteResult.rowCount === 0) {
+      throw new Error(
+        `No allocation found with allocation_id = ${allocationId}`
+      );
+    } else {
+      console.log(`Allocation deleted: `, deleteResult.rows[0]);
+    }
+
+    // Update the 'warehouse3inventory' by adding the allocated amount back to 'Qty Required'
+    const updateResult = await pool.query(
+      'UPDATE warehouse3inventory SET "Qty Required" = "Qty Required" + $1 WHERE "ITEM" = $2 AND "Size" = $3 RETURNING *',
+      [allocatedAmount, itemName, size]
+    );
+
+    // Check if update was successful
+    if (updateResult.rowCount === 0) {
+      throw new Error(
+        `No matching item in warehouse3inventory for ITEM = ${itemName} and Size = ${size}`
+      );
+    } else {
+      console.log(`Warehouse inventory updated: `, updateResult.rows[0]);
+    }
+
+    // Commit transaction
+    await pool.query("COMMIT");
+
+    res.redirect(
+      `/viewwarehouse3-allocations?message=Allocation deleted successfully.`
+    );
+  } catch (error) {
+    // Rollback transaction in case of error
+    await pool.query("ROLLBACK");
+    console.error(err);
+    res.redirect(
+      "/viewwarehouse3-allocations?message=Failed to delete allocation."
+    );
   }
 });
 
