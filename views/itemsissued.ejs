@@ -163,8 +163,6 @@
                     <th>Received Date</th>
                     <th>Size</th>
                     <th>Warehouse</th>
-                    <th>PO</th>
-                    <th>PO Number</th>
                     <th>Delete</th>
                 </tr>
             </thead>
@@ -185,16 +183,7 @@
                                 Unknown Warehouse
                             <% } %>
                         </td>                        
-                        <td>
-                            <% if (receiving.image) { %>
-                                <a href="/temp/<%= receiving.image.split('temp_')[1] %>" target="_blank">
-                                  <img src="/temp/<%= receiving.image.split('temp_')[1] %>" alt="PO Image" class="PO" >
-                                </a>
-                            <% } else { %>
-                                No Image Available
-                            <% } %>
-                        </td>
-                        <td><%= receiving.PO_Num %></td>
+                        
                         <td>
                             <form action="/deleteReceiving/<%= receiving.item_id %>" method="POST">
                                 <button type="submit" class="delete-btn">Delete</button>

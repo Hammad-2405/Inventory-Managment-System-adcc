@@ -1439,8 +1439,8 @@ app.get("/itemsissued", async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      warehouse_id: item1.warehouse_id,
-      image: saveImage(item1.PO),
+      warehouse_id: item1.warehouse_id
+      // image: saveImage(item1.PO),
     }));
 
     // Get the total number of records for pagination controls
@@ -1542,7 +1542,6 @@ app.get("/beforeinventoryadd1", async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO),
       id: item1.id,
     }));
     await client.query("COMMIT");
@@ -1584,7 +1583,6 @@ app.get("/beforeinventoryadd2", async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO),
       id: item1.id,
     }));
     await client.query("COMMIT");
@@ -1626,7 +1624,6 @@ app.get("/beforeinventoryadd3", async (req, res) => {
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      image: saveImage(item1.PO),
       id: item1.id,
     }));
     await client.query("COMMIT");
@@ -1647,7 +1644,9 @@ app.get("/beforeinventoryadd3", async (req, res) => {
 app.get("/viewinventory2", async (req, res) => {
   try {
     // Query the 'Inventory' table to retrieve all inventory data
-    const result = await pool.query('SELECT * FROM "warehouse2inventory"');
+    const result = await pool.query(
+      'SELECT DISTINCT "ITEM" FROM "warehouse2inventory"'
+    );
     const inventory = result.rows;
 
     // Render the viewinventory.ejs template with the fetched inventory data
@@ -1739,7 +1738,7 @@ app.get("/view-item", async (req, res) => {
 
     // Fetch contractor names for the relevant contractor IDs
     const contractorsResult = await pool.query(
-      `SELECT con_id, con_name FROM public."contractors" WHERE con_id = ANY($1::int[])`,
+      `SELECT con_id, con_name, project_id, no_of_houses FROM public."contractors" WHERE con_id = ANY($1::int[])`,
       [contractorIds]
     );
     const contractors = contractorsResult.rows;
@@ -1793,13 +1792,67 @@ app.get("/view-item1", async (req, res) => {
 
     // Fetch contractor names for the relevant contractor IDs
     const contractorsResult = await pool.query(
-      `SELECT con_id, con_name FROM public."contractors" WHERE con_id = ANY($1::int[])`,
+      `SELECT con_id, con_name, project_id, no_of_houses FROM public."contractors" WHERE con_id = ANY($1::int[])`,
       [contractorIds]
     );
     const contractors = contractorsResult.rows;
 
     // Render the view with item details, allocated inventory details, project names, and contractor names
     res.render("view-item1", {
+      itemDetails,
+      allocatedInventory,
+      projects,
+      contractors,
+    });
+  } catch (error) {
+    console.error(
+      "Error fetching inventory, allocation, project, or contractor details:",
+      error
+    );
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+app.get("/view-item2", async (req, res) => {
+  const itemName = req.query.item;
+
+  try {
+    // Fetch item details including DENO from the warehouse1inventory table
+    const itemResult = await pool.query(
+      'SELECT *, "DENO" FROM public."warehouse2inventory" WHERE "ITEM" = $1',
+      [itemName]
+    );
+    const itemDetails = itemResult.rows;
+
+    // Fetch allocation details from the allocated_inventory table
+    const allocationResult = await pool.query(
+      'SELECT * FROM public."allocated_inv" WHERE "item_name" = $1 AND "warehouse_id" = 2',
+      [itemName]
+    );
+    const allocatedInventory = allocationResult.rows;
+
+    // Fetch all unique project IDs and contractor IDs from the allocated_inventory results
+    const projectIds = [
+      ...new Set(allocatedInventory.map((a) => a.project_id)),
+    ];
+    const contractorIds = [...new Set(allocatedInventory.map((a) => a.con_id))];
+
+    // Fetch project names for the relevant project IDs
+    const projectsResult = await pool.query(
+      `SELECT project_id, project_name FROM public."projects" WHERE project_id = ANY($1::int[])`,
+      [projectIds]
+    );
+    const projects = projectsResult.rows;
+
+    // Fetch contractor names for the relevant contractor IDs
+    const contractorsResult = await pool.query(
+      `SELECT con_id, con_name, project_id, no_of_houses FROM public."contractors" WHERE con_id = ANY($1::int[])`,
+      [contractorIds]
+    );
+    const contractors = contractorsResult.rows;
+
+    // Render the view with item details, allocated inventory details, project names, and contractor names
+    res.render("view-item2", {
       itemDetails,
       allocatedInventory,
       projects,
@@ -2515,22 +2568,22 @@ app.post("/deleteAllocation3", async (req, res) => {
 // Handle form submission to add inventory
 app.post("/addinventory1", async (req, res) => {
   try {
-    const { item, size, po_num, deno, qtyrequired, price, receivingId } =
+    const { item, size, deno, qtyrequired, receivingId } =
       req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
+    if (!item || !deno || !qtyrequired || !price) {
       req.flash("error_msg", "All fields are required.");
       return res.redirect(`/addinventory1?receivingId=${receivingId}`);
     }
 
     const upperItemName = item.toUpperCase();
 
-    if (isNaN(price)) {
-      req.flash("error_msg", "Price must be a numeric value.");
-      return res.redirect(`/addinventory1?receivingId=${receivingId}`);
-    }
+    // if (isNaN(price)) {
+    //   req.flash("error_msg", "Price must be a numeric value.");
+    //   return res.redirect(`/addinventory1?receivingId=${receivingId}`);
+    // }
 
     if (isNaN(id)) {
       req.flash("error_msg", "Invalid receiving ID.");
@@ -2541,13 +2594,11 @@ app.post("/addinventory1", async (req, res) => {
 
     // Insert the inventory into the database
     const insertQuery = `
-    INSERT INTO public."warehouse1inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
-    VALUES (UPPER($1), UPPER($2), UPPER($3), $4, $5, $6)
+    INSERT INTO public."warehouse1inventory" ("ITEM", "Size", "DENO", "Qty Required")
+    VALUES (UPPER($1), UPPER($2), UPPER($3), $4)
     ON CONFLICT ("ITEM", "Size")
     DO UPDATE SET
-    "Qty Required" = public."warehouse1inventory"."Qty Required" + EXCLUDED."Qty Required",
-    "price" = public."warehouse1inventory"."price" + EXCLUDED."price",
-    "PO_Num" = EXCLUDED."PO_Num"
+    "Qty Required" = public."warehouse1inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
     await pool.query(insertQuery, [
@@ -2555,8 +2606,6 @@ app.post("/addinventory1", async (req, res) => {
       size,
       deno,
       qtyrequired,
-      price,
-      po_num,
     ]);
 
     const recvdelQuery = `
@@ -2745,22 +2794,22 @@ app.post("/allocateinv1", async (req, res) => {
 
 app.post("/addinventory2", async (req, res) => {
   try {
-    const { item, size, po_num, deno, qtyrequired, price, receivingId } =
+    const { item, size, deno, qtyrequired, receivingId } =
       req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
+    if (!item || !deno || !qtyrequired) {
       req.flash("error_msg", "All fields are required.");
       return res.redirect(`/addinventory2?receivingId=${receivingId}`);
     }
 
     const upperItemName = item.toUpperCase();
 
-    if (isNaN(price)) {
-      req.flash("error_msg", "Price must be a numeric value.");
-      return res.redirect(`/addinventory2?receivingId=${receivingId}`);
-    }
+    // if (isNaN(price)) {
+    //   req.flash("error_msg", "Price must be a numeric value.");
+    //   return res.redirect(`/addinventory2?receivingId=${receivingId}`);
+    // }
 
     if (isNaN(id)) {
       req.flash("error_msg", "Invalid receiving ID.");
@@ -2771,13 +2820,11 @@ app.post("/addinventory2", async (req, res) => {
 
     // Insert the inventory into the database
     const insertQuery = `
-    INSERT INTO public."warehouse2inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
-    VALUES (UPPER($1), UPPER($2), UPPER($3), $4, $5, $6)
+    INSERT INTO public."warehouse2inventory" ("ITEM", "Size", "DENO", "Qty Required")
+    VALUES (UPPER($1), UPPER($2), UPPER($3), $4)
     ON CONFLICT ("ITEM", "Size")
     DO UPDATE SET
-    "Qty Required" = public."warehouse2inventory"."Qty Required" + EXCLUDED."Qty Required",
-    "price" = public."warehouse2inventory"."price" + EXCLUDED."price",
-    "PO_Num" = EXCLUDED."PO_Num"
+    "Qty Required" = public."warehouse2inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
     await pool.query(insertQuery, [
@@ -2785,8 +2832,6 @@ app.post("/addinventory2", async (req, res) => {
       size,
       deno,
       qtyrequired,
-      price,
-      po_num,
     ]);
 
     const recvdelQuery = `
@@ -2953,22 +2998,22 @@ app.post("/allocateinv2", async (req, res) => {
 
 app.post("/addinventory3", async (req, res) => {
   try {
-    const { item, size, po_num, deno, qtyrequired, price, receivingId } =
+    const { item, size, deno, qtyrequired, receivingId } =
       req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !size || !po_num || !deno || !qtyrequired || !price) {
+    if (!item || !deno || !qtyrequired) {
       req.flash("error_msg", "All fields are required.");
       return res.redirect(`/addinventory3?receivingId=${receivingId}`);
     }
 
     const upperItemName = item.toUpperCase();
 
-    if (isNaN(price)) {
-      req.flash("error_msg", "Price must be a numeric value.");
-      return res.redirect(`/addinventory3?receivingId=${receivingId}`);
-    }
+    // if (isNaN(price)) {
+    //   req.flash("error_msg", "Price must be a numeric value.");
+    //   return res.redirect(`/addinventory3?receivingId=${receivingId}`);
+    // }
 
     if (isNaN(id)) {
       req.flash("error_msg", "Invalid receiving ID.");
@@ -2979,13 +3024,11 @@ app.post("/addinventory3", async (req, res) => {
 
     // Insert the inventory into the database
     const insertQuery = `
-    INSERT INTO public."warehouse3inventory" ("ITEM", "Size", "DENO", "Qty Required", "price", "PO_Num")
-    VALUES (UPPER($1), UPPER($2), UPPER($3), $4, $5, $6)
+    INSERT INTO public."warehouse3inventory" ("ITEM", "Size", "DENO", "Qty Required")
+    VALUES (UPPER($1), UPPER($2), UPPER($3), $4)
     ON CONFLICT ("ITEM", "Size")
     DO UPDATE SET
-    "Qty Required" = public."warehouse3inventory"."Qty Required" + EXCLUDED."Qty Required",
-    "price" = public."warehouse3inventory"."price" + EXCLUDED."price",
-    "PO_Num" = EXCLUDED."PO_Num"
+    "Qty Required" = public."warehouse3inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
     await pool.query(insertQuery, [
@@ -2993,8 +3036,6 @@ app.post("/addinventory3", async (req, res) => {
       size,
       deno,
       qtyrequired,
-      price,
-      po_num,
     ]);
 
     const recvdelQuery = `
@@ -3180,15 +3221,11 @@ app.post("/updateboq", async (req, res) => {
   }
 });
 
-app.post(
-  "/receivinginventory.html",
-  upload.single("image"),
-  async (req, res) => {
-    let { item_name, receiving_date, warehouse, size, quantity, po_num } =
-      req.body;
-    const image = req.file ? req.file.buffer : null;
+app.post("/receivinginventory.html", async (req, res) => {
+    const { item_name, receiving_date, warehouse, size } = req.body;
+    // const image = req.file ? req.file.buffer : null;
     const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
-
+    
     const upperItemName = item_name.toUpperCase();
 
     // if (receiving_date < currentDate) {
@@ -3201,15 +3238,12 @@ app.post(
     try {
       await client.query("BEGIN");
       const insertReceivingQuery =
-        'INSERT INTO receivings (date_received, item, warehouse_id, "Size", "Quantity", "PO", "PO_Num") VALUES ($1, $2, $3, $4, $5, $6, $7)';
+        'INSERT INTO receivings (date_received, item, warehouse_id, "Size") VALUES ($1, $2, $3, $4)';
       await pool.query(insertReceivingQuery, [
         receiving_date,
         upperItemName,
         warehouse,
         size,
-        quantity,
-        image,
-        po_num,
       ]);
       await client.query("COMMIT");
 

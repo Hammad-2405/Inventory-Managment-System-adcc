@@ -155,13 +155,19 @@
 
       <div class="item-quantity">
         <span class="quantity-label">Total Remaining:</span>
-        <span class="quantity-value"> <%= item['Qty Required'] %> </span>
+        <span class="quantity-value"> <%= item['Qty Required'].toFixed(2)%> </span>
       </div>
 
       <div class="summary-heading"><b>Allocation Summary</b></div>
 
       <% allocatedInventory.forEach(allocation => { 
           if (allocation['item_name'] === item['ITEM'] && allocation['size'] === item['Size']) { 
+            // Find the corresponding contractor
+            const contractor = contractors.find(c => c.con_id === allocation['con_id']);
+            const project = projects.find(p => p.project_id === allocation['project_id']);
+            
+            // Calculate quantity per house
+            const quantityPerHouse = allocation['allocated_amount'] / contractor.no_of_houses;
       %>
       <div class="allocation-section">
         <div class="allocation-details">
@@ -180,6 +186,12 @@
           <span class="allocation-label">Allocated Amount: </span>
           <span class="allocation-value">
             <%= allocation['allocated_amount'] %>
+          </span>
+        </div>
+        <div class="allocation-details">
+          <span class="allocation-label">Quantity per House: </span>
+          <span class="allocation-value">
+            <%= quantityPerHouse.toFixed(2) %> <!-- Limit to two decimal places -->
           </span>
         </div>
         <div class="allocation-details">

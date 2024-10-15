@@ -166,7 +166,6 @@
                 <th>Item Name</th>
                 <th>Receiving Date</th>
                 <th>Size</th>
-                <th>PO</th>
                 <th>Select</th>
               </tr>
             </thead>
@@ -176,15 +175,6 @@
                 <td><%= item1.item_name %></td> <!-- Use 'item_name' instead of 'item' -->
                 <td><%= item1.date_received %></td>
                 <td><%= item1.size %></td> <!-- Use 'size' instead of 'Size' -->
-                <td>
-                    <% if (item1.image) { %>
-                    <a href="/<%= item1.image %>" target="_blank">
-                      <img src="/<%= item1.image %>" alt="PO" class="PO">
-                    </a>
-                    <% } else { %>
-                    No Image Available
-                    <% } %>
-                  </td>
                 <td><button class="add-button" name="receivingId" value="<%= item1.id %>">Add to Inventory</button></td>
               </tr>
               <% }); %>

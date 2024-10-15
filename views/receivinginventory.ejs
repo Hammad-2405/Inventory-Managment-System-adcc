@@ -175,9 +175,9 @@
                 <%= successMessage %>
             </div>
         <% } %>
-        <form action="/receivinginventory.html" method="post" enctype="multipart/form-data">
+        <form action="/receivinginventory.html" method="post">
             <div class="input-group">
-                <label for="item">Enter Item Name</label>
+                <label for="item_name">Enter Item Name</label>
                 <input type="text" id="item_name" name="item_name" required>            
             </div>
 
@@ -200,12 +200,12 @@
                 <input type="text" id="size" name="size" >            
             </div>
 
-            <div class="input-group">
+            <!-- <div class="input-group">
                 <label for="qty">Enter Quantity</label>
                 <input type="number" step="any" id="qty" name="quantity" required>            
-            </div>
+            </div> -->
 
-            <div class="input-group">
+            <!-- <div class="input-group">
                 <label for="image">Upload Purchase Order</label>
                 <input type="file" id="image" name="image" required>
             </div>
@@ -213,7 +213,7 @@
             <div class="input-group">
                 <label for="po_num">Enter PO Number</label>
                 <input type="text" step="any" id="po_num" name="po_num" required>
-            </div>
+            </div> -->
 
             <input type="submit" class="login-btn" value="Add Inventory">
         </form>
