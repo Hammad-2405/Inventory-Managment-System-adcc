@@ -1425,14 +1425,13 @@ app.get("/generatevouchers", (req, res) => {
 
 app.get("/itemsissued", async (req, res) => {
   try {
-    const page = parseInt(req.query.page, 10) || 1; // Get the current page from query params, default to page 1
-    const limit = 20; // Number of items per page
-    const offset = (page - 1) * limit; // Calculate offset based on page
+    // const page = parseInt(req.query.page, 10) || 1; // Get the current page from query params, default to page 1
+    // const limit = 20; // Number of items per page
+    // const offset = (page - 1) * limit; // Calculate offset based on page
 
     // Query to fetch paginated results
     const result = await pool.query(
-      'SELECT * FROM "receivings" LIMIT $1 OFFSET $2',
-      [limit, offset]
+      'SELECT * FROM "receivings"'
     );
     const receivings = result.rows.map((item1) => ({
       item_id: item1.id,
@@ -1443,12 +1442,12 @@ app.get("/itemsissued", async (req, res) => {
       // image: saveImage(item1.PO),
     }));
 
-    // Get the total number of records for pagination controls
-    const totalResult = await pool.query('SELECT COUNT(*) FROM "receivings"');
-    const totalRecords = parseInt(totalResult.rows[0].count, 10);
-    const totalPages = Math.ceil(totalRecords / limit);
+    // // Get the total number of records for pagination controls
+    // const totalResult = await pool.query('SELECT COUNT(*) FROM "receivings"');
+    // const totalRecords = parseInt(totalResult.rows[0].count, 10);
+    // const totalPages = Math.ceil(totalRecords / limit);
 
-    res.render("itemsissued", { receivings, currentPage: page, totalPages });
+    res.render("itemsissued", { receivings });
   } catch (error) {
     console.error("Error fetching receivings:", error);
     res.status(500).send("Internal Server Error");
@@ -3058,7 +3057,7 @@ app.post("/addinventory3", async (req, res) => {
     await pool.query("ROLLBACK");
     console.error("Error adding inventory:", error);
     req.flash("errorMessages", "Internal Server Error.");
-    res.redirect("/beforeinventoryadd3");
+    res.redirect("/addinventory3");
   }
 });
 
@@ -3236,7 +3235,7 @@ app.post("/receivinginventory.html", async (req, res) => {
     // }
 
     try {
-      await client.query("BEGIN");
+      await pool.query("BEGIN");
       const insertReceivingQuery =
         'INSERT INTO receivings (date_received, item, warehouse_id, "Size") VALUES ($1, $2, $3, $4)';
       await pool.query(insertReceivingQuery, [
@@ -3245,14 +3244,14 @@ app.post("/receivinginventory.html", async (req, res) => {
         warehouse,
         size,
       ]);
-      await client.query("COMMIT");
+      await pool.query("COMMIT");
 
       req.flash("success", "Inventory received successfully.");
       res.render("receivinginventory", {
         successMessage: req.flash("success"),
       });
     } catch (error) {
-      await client.query("ROLLBACK");
+      await pool.query("ROLLBACK");
 
       console.error("Error receiving inventory:", error);
       req.flash("error", "Internal Server Error");

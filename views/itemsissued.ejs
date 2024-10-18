@@ -67,11 +67,14 @@
         .search-container {
             margin-bottom: 20px;
             text-align: center;
+            padding: 20px; /* Add padding to increase the size of the container */
+            max-width: 50%; /* Control the overall width of the container */
+            margin: 0 auto; /* Center the container */
         }
 
         .search-container input[type="text"] {
-            width: 60%;
-            padding: 10px;
+            width: 80%;
+            padding: 20px;
             font-size: 16px;
             border: 2px solid #ddd;
             border-radius: 5px;
@@ -153,7 +156,7 @@
     </div>
 
     <section>
-        <div class="search-container"></div>
+        <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search for items...">
         </div>
         <table id="inventoryTable">
@@ -193,23 +196,7 @@
                 <% }); %>
             </tbody>
         </table>
-        <div class="pagination">
-            <% if (currentPage > 1) { %>
-                <a href="/itemsissued?page=<%= currentPage - 1 %>">Previous</a>
-            <% } else { %>
-                <a href="#" class="disabled">Previous</a>
-            <% } %>
-
-            <% for (let i = 1; i <= totalPages; i++) { %>
-                <a href="/itemsissued?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-            <% } %>
-
-            <% if (currentPage < totalPages) { %>
-                <a href="/itemsissued?page=<%= currentPage + 1 %>">Next</a>
-            <% } else { %>
-                <a href="#" class="disabled">Next</a>
-            <% } %>
-        </div>
+        
     </section>   
     <script>
         const searchInput = document.getElementById('searchInput');
