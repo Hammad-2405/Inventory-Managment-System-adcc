@@ -2573,7 +2573,7 @@ app.post("/addinventory1", async (req, res) => {
     const id = parseInt(receivingId, 10);
 
     // Validation checks
-    if (!item || !deno || !qtyrequired || !price) {
+    if (!item || !deno || !qtyrequired) {
       req.flash("error_msg", "All fields are required.");
       return res.redirect(`/addinventory1?receivingId=${receivingId}`);
     }
