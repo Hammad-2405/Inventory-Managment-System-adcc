@@ -134,20 +134,42 @@
             border-radius: 5px;
             margin-bottom: 10px;
         }
+        .back-container {
+        margin-top: 120px;
+        /* Margin to account for the fixed navbar height */
+        padding: 0 20px;
+        text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div class="navBox">
         <div class="navyImage">
-            <img src="img/pic2.png" alt="Navy Logo">
+          <img src="img/pic2.png" alt="NavyLogo" />
         </div>
+        <a
+          href="/warehouse3.html"
+          class="back-btn"
+          style="
+            background-color: #007bff;
+            border: none;
+            font-size: 20px;
+            margin-left: 5px;
+            text-decoration: none;
+            border-radius: 10px;
+            padding: 10px;
+            color: white;
+          "
+        >
+          <b>Back to Dashboard</b>
+        </a>
         <div class="adcc">
-            <p>ADCC</p>
+          <h1><b>Choose Item</b></h1>
         </div>
         <div class="adccImage">
-            <img src="img/pic2.png" alt="ADCC Logo">
+          <img src="img/pic2.png" alt="ADCCLogo" />
         </div>
-    </div>
+      </div>
     <section>
         <% if (errorMessages && errorMessages.length > 0) { %>
             <div class="error-messages">
@@ -174,7 +196,7 @@
               <% items.forEach(item1 => { %>
               <tr>
                 <td><%= item1.item_name %></td> <!-- Use 'item_name' instead of 'item' -->
-                <td><%= item1.date_received %></td>
+                <td><%= new Date(item1.date_received).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) %></td>
                 <td><%= item1.size %></td> <!-- Use 'size' instead of 'Size' -->
                 <td><button class="add-button" name="receivingId" value="<%= item1.id %>">Add to Inventory</button></td>
               </tr>
