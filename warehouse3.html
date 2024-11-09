@@ -1,166 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anchorage Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body,
-        html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: url('img/pic18.jpg') no-repeat center center fixed;
-            background-size: cover;
-        }
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url("img/pic18.jpg") no-repeat center center fixed;
+        background-size: cover;
+      }
 
+      .dashboard-container {
+        display: flex;
+        flex-wrap: wrap;
+        /* Allow items to wrap to the next line */
+        justify-content: center;
+        margin-top: 100px;
+        /* Adjusted margin-top for better view */
+        max-width: 1000px;
+        /* Max width to control when wrapping occurs */
+      }
+
+      .dashboard-link {
+        background-color: #fdbe33;
+        color: black;
+        font-family: "poppins";
+        border: none;
+        padding: 20px;
+        margin: 10px;
+        width: 210px;
+        /* Adjusted width for icon and text */
+        height: 120px;
+        /* Fixed height for consistency */
+        display: flex;
+        align-items: center;
+        /* Center items vertically */
+        text-decoration: none;
+        font-size: 23px;
+        /* Adjusted font size */
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      .dashboard-link:hover {
+        background-color: #d29000;
+      }
+
+      .dashboard-link img {
+        width: 50px;
+        /* Adjust size of icons */
+        height: 50px;
+        margin-right: 20px;
+        /* Space between icon and text */
+      }
+
+      .navBox {
+        background-color: #030f27;
+        width: 100%;
+        height: 100px;
+        /* Fixed height */
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        /* Vertically center items */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Add subtle shadow for separation */
+      }
+
+      .navyImage,
+      .adccImage {
+        background-color: white;
+        display: flex;
+        align-items: center;
+        /* Vertically center items */
+        border-radius: 50%;
+        /* Make the background a circle */
+        padding: 10px;
+        /* Add padding to make the circle larger */
+      }
+
+      .navyImage img,
+      .adccImage img {
+        height: 80px;
+        /* Set the height of the image */
+        width: 80px;
+        /* Set the width of the image */
+        border-radius: 50%;
+        /* Make the image a circle */
+        object-fit: cover;
+        /* Ensure the image covers the area */
+      }
+
+      .adcc {
+        color: white;
+        margin-right: auto;
+        /* Set margin-right to auto to push it to the center */
+        margin-left: auto;
+        /* Set margin-left to auto to center it horizontally */
+        font-size: 23px;
+        text-align: center;
+        /* Align text content to center */
+        font-family: "Poppins", sans-serif;
+        font-weight: bold;
+      }
+
+      @media (max-width: 750px) {
         .dashboard-container {
-            display: flex;
-            flex-wrap: wrap;
-            /* Allow items to wrap to the next line */
-            justify-content: center;
-            margin-top: 100px;
-            /* Adjusted margin-top for better view */
-            max-width: 1000px;
-            /* Max width to control when wrapping occurs */
+          flex-direction: column;
+          /* Stack items vertically on smaller screens */
         }
-
-        .dashboard-link {
-            background-color: #fdbe33;
-            color: black;
-            font-family: 'poppins';
-            border: none;
-            padding: 20px;
-            margin: 10px;
-            width: 210px;
-            /* Adjusted width for icon and text */
-            height: 120px;
-            /* Fixed height for consistency */
-            display: flex;
-            align-items: center;
-            /* Center items vertically */
-            text-decoration: none;
-            font-size: 23px;
-            /* Adjusted font size */
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .dashboard-link:hover {
-            background-color: #d29000;
-        }
-
-        .dashboard-link img {
-            width: 50px;
-            /* Adjust size of icons */
-            height: 50px;
-            margin-right: 20px;
-            /* Space between icon and text */
-        }
-
-        .navBox {
-            background-color: #030f27;
-            width: 100%;
-            height: 100px;
-            /* Fixed height */
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            /* Vertically center items */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            /* Add subtle shadow for separation */
-        }
-
-        .navyImage,
-        .adccImage {
-            background-color: white;
-            display: flex;
-            align-items: center;
-            /* Vertically center items */
-            border-radius: 50%;
-            /* Make the background a circle */
-            padding: 10px;
-            /* Add padding to make the circle larger */
-        }
-
-        .navyImage img,
-        .adccImage img {
-            height: 80px;
-            /* Set the height of the image */
-            width: 80px;
-            /* Set the width of the image */
-            border-radius: 50%;
-            /* Make the image a circle */
-            object-fit: cover;
-            /* Ensure the image covers the area */
-        }
-
-        .adcc {
-            color: white;
-            margin-right: auto;
-            /* Set margin-right to auto to push it to the center */
-            margin-left: auto;
-            /* Set margin-left to auto to center it horizontally */
-            font-size: 23px;
-            text-align: center;
-            /* Align text content to center */
-            font-family: 'Poppins', sans-serif;
-            font-weight: bold;
-        }
-
-        @media (max-width: 750px) {
-            .dashboard-container {
-                flex-direction: column;
-                /* Stack items vertically on smaller screens */
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="navBox">
-        <div class="navyImage">
-            <img src="img/pic2.png" alt="NavyLogo">
-        </div>
-        <div class="adcc">
-            <h1>ADCC - Anchorage Dashboard</h1>
-        </div>
-        <div class="adccImage">
-            <img src="img/pic2.png" alt="ADCCLogo">
-        </div>
+      <div class="navyImage">
+        <img src="img/pic2.png" alt="NavyLogo" />
+      </div>
+      <div class="adcc">
+        <h1>ADCC - Anchorage Dashboard</h1>
+      </div>
+      <div class="adccImage">
+        <img src="img/pic2.png" alt="ADCCLogo" />
+      </div>
     </div>
     <div class="dashboard-container">
-        <a href="viewinventory3" class="dashboard-link" onclick="viewScorecard()">
-            <img src="img/pic22.png" alt="View Inventory Icon">
-            View Inventory
-        </a>
-        <a href="beforeinventoryadd3" class="dashboard-link" onclick="viewScorecard()">
-            <img src="img/pic36.png" alt="Add Inventory Icon">
-            Add Inventory
-        </a>
-        <a href="showprojects3" class="dashboard-link" onclick="viewProgress()">
-            <img src="img/pic38.png" alt="Allocate Inventory Icon">
-            Allocate Inventory
-        </a>
-        <a href="viewprojects3" class="dashboard-link" onclick="settings()">
+      <a href="viewinventory3" class="dashboard-link" onclick="viewScorecard()">
+        <img src="img/pic22.png" alt="View Inventory Icon" />
+        View Inventory
+      </a>
+      <a
+        href="beforeinventoryadd3"
+        class="dashboard-link"
+        onclick="viewScorecard()"
+      >
+        <img src="img/pic36.png" alt="Add Inventory Icon" />
+        Add Inventory
+      </a>
+      <a href="showprojects3" class="dashboard-link" onclick="viewProgress()">
+        <img src="img/pic38.png" alt="Allocate Inventory Icon" />
+        Allocate Inventory
+      </a>
+      <!-- <a href="viewprojects3" class="dashboard-link" onclick="settings()">
             <img src="img/pic37.png" alt="Share Vendor Details Icon">
             Share Vendor Details
-        </a>
-        <a href="/" class="dashboard-link" onclick="settings()">
-            <img src="img/logout.png" alt="Logout Icon">
-            Logout
-        </a>
+        </a> -->
+      <a href="/" class="dashboard-link" onclick="settings()">
+        <img src="img/logout.png" alt="Logout Icon" />
+        Logout
+      </a>
     </div>
-</body>
-
+  </body>
 </html>

@@ -1,206 +1,229 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Share Vendor Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            background: url('img/pic43.jpg') no-repeat center center fixed;
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            font-family: 'Poppins', sans-serif;
-        }
+      body {
+        background: url("img/c5.png") no-repeat center center fixed;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        font-family: "Poppins", sans-serif;
+      }
 
-        .navBox {
-            background-color: #030f27;
-            width: 100%;
-            height: 100px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+      .navBox {
+        background-color: #030f27;
+        width: 100%;
+        height: 100px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
 
-        .navyImage, .adccImage {
-            display: flex;
-            align-items: center;
-            border-radius: 50%;
-            padding: 10px;
-        }
+      .navyImage,
+      .adccImage {
+        display: flex;
+        align-items: center;
+        border-radius: 50%;
+        padding: 10px;
+      }
 
-        .navyImage img, .adccImage img {
-            height: 80px;
-            width: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
+      .navyImage img,
+      .adccImage img {
+        height: 80px;
+        width: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
 
-        .adcc {
-            color: white;
-            margin: 0 auto;
-            font-size: 23px;
-            text-align: center;
-            font-weight: bold;
-        }
+      .adcc {
+        color: white;
+        margin: 0 auto;
+        font-size: 23px;
+        text-align: center;
+        font-weight: bold;
+      }
 
-        .addinventoryform {
-            max-width: 400px;
-            margin: 150px auto;
-            padding: 40px;
-            background: rgba(3, 15, 39, 0.8);
-            border-radius: 8px;
-            text-align: center;
-            margin-top: 60px;
-        }
+      .addinventoryform {
+        max-width: 400px;
+        margin: 150px auto;
+        padding: 40px;
+        background: rgba(3, 15, 39, 0.8);
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 60px;
+      }
 
-        .heading {
-            color: white;
-            font-size: 20px;
-            margin-bottom: 20px;
-        }
+      .heading {
+        color: white;
+        font-size: 20px;
+        margin-bottom: 20px;
+      }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+      .input-group {
+        margin-bottom: 20px;
+      }
 
-        .input-group label {
-            display: block;
-            margin-bottom: 7px;
-            color: white;
-            font-size: 16px;
-            text-align: left;
-        }
+      .input-group label {
+        display: block;
+        margin-bottom: 7px;
+        color: white;
+        font-size: 16px;
+        text-align: left;
+      }
 
-        .input-group input, .input-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 16px;
-            margin-top: 5px;
-        }
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 16px;
+        margin-top: 5px;
+      }
 
-        .input-group input:focus, .input-group select:focus {
-            outline: none;
-            border-color: #0056b3;
-        }
+      .input-group input:focus,
+      .input-group select:focus {
+        outline: none;
+        border-color: #0056b3;
+      }
 
-        .login-btn {
-            color: white;
-            border: 3px solid #ffffff;
-            font-weight: bold;
-            background: rgba(3, 15, 39, 0.8);
-            padding: 10px;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.3s, color 0.3s;
-        }
+      .login-btn {
+        color: white;
+        border: 3px solid #ffffff;
+        font-weight: bold;
+        background: rgba(3, 15, 39, 0.8);
+        padding: 10px;
+        width: 100%;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background 0.3s, color 0.3s;
+      }
 
-        .login-btn:hover {
-            background: white;
-            color: black;
-            border-color: white;
-        }
+      .login-btn:hover {
+        background: white;
+        color: black;
+        border-color: white;
+      }
 
-        .flash-message {
-            font-size: 14px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+      .flash-message {
+        font-size: 14px;
+        margin-bottom: 10px;
+        text-align: center;
+      }
 
-        .error-messages .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 10px;
-            border: 1px solid #f5c6cb;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
+      .error-messages .error-message {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
 
-        .success-message {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 10px;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
+      .success-message {
+        background-color: #d4edda;
+        color: #155724;
+        padding: 10px;
+        border: 1px solid #c3e6cb;
+        border-radius: 5px;
+        margin-bottom: 10px;
+      }
 
-        .back-container {
-            margin-top: 120px;
-            /* Margin to account for the fixed navbar height */
-            padding: 0 20px;
-            text-decoration: none;
-        }
+      .back-container {
+        margin-top: 120px;
+        /* Margin to account for the fixed navbar height */
+        padding: 0 20px;
+        text-decoration: none;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="navBox">
-        <div class="navyImage">
-            <img src="img/pic2.png" alt="NavyLogo">
-        </div>
-        <div class="adcc">
-            <h1><b>Share Vendor Details</b></h1>
-        </div>
-        <div class="adccImage">
-            <img src="img/pic2.png" alt="NavyLogo">
-        </div>
+      <div class="navyImage">
+        <img src="img/pic2.png" alt="NavyLogo" />
+      </div>
+      <div class="adcc">
+        <h1><b>Share Vendor Details</b></h1>
+      </div>
+      <div class="adccImage">
+        <img src="img/pic2.png" alt="NavyLogo" />
+      </div>
     </div>
 
     <div class="back-container">
-        <a href="" class="back-btn" style="background-color: #007bff; border: none; font-size: 20px; text-decoration: none; border-radius: 10px; padding: 10px; color: white;">
-            <b>Back to Dashboard</b>
-        </a>
+      <a
+        href="/warehouse1.html"
+        class="back-btn"
+        style="
+          background-color: #007bff;
+          border: none;
+          font-size: 20px;
+          text-decoration: none;
+          border-radius: 10px;
+          padding: 10px;
+          color: white;
+        "
+      >
+        <b>Back to Dashboard</b>
+      </a>
     </div>
 
     <section class="addinventoryform">
-        <div class="heading">
-            <h1><b>Enter Vendor Details</b></h1>
+      <div class="heading">
+        <h1><b>Enter Vendor Details</b></h1>
+      </div>
+
+      <% if (errorMessages && errorMessages.length > 0) { %>
+      <div class="error-messages">
+        <% errorMessages.forEach(message => { %>
+        <div class="error-message flash-message"><%= message %></div>
+        <% }); %>
+      </div>
+      <% } %> <% if (successMessage && successMessage.length > 0) { %>
+      <div class="success-message flash-message"><%= successMessage %></div>
+      <% } %>
+
+      <form id="vendorDetailsForm" action="/sharevendordetails" method="POST">
+        <div class="input-group">
+          <label for="vendor_name">Vendor Name:</label>
+          <input type="text" id="vendor_name" name="vendor_name" required />
         </div>
-
-        <% if (errorMessages && errorMessages.length > 0) { %>
-            <div class="error-messages">
-                <% errorMessages.forEach(message => { %>
-                    <div class="error-message flash-message"><%= message %></div>
-                <% }); %>
-            </div>
-        <% } %>
-
-        <% if (successMessage && successMessage.length > 0) { %>
-            <div class="success-message flash-message"><%= successMessage %></div>
-        <% } %>
-
-        <form id="vendorDetailsForm" action="/sharevendordetails" method="POST">
-            <div class="input-group">
-                <label for="vendor_name">Vendor Name:</label>
-                <input type="text" id="vendor_name" name="vendor_name" required>
-            </div>
-            <div class="input-group">
-                <label for="contact">Contact:</label>
-                <input type="text" id="contact" name="contact" required>
-            </div>
-            <div class="input-group">
-                <label for="cnic">CNIC:</label>
-                <input type="text" id="cnic" name="cnic" required>
-            </div>
-            <div class="input-group">
-                <label for="project_id">Project ID:</label>
-                <input type="text" id="project_id" name="project_id" value="<%= projectId %>" required>
-            </div>
-            <div class="input-group">
-                <label for="works">Works:</label>
-                <input type="text" id="works" name="works" required>
-            </div>
-            <input type="submit" class="login-btn" value="Submit">
-        </form>
+        <div class="input-group">
+          <label for="contact">Contact:</label>
+          <input type="text" id="contact" name="contact" required />
+        </div>
+        <div class="input-group">
+          <label for="cnic">CNIC:</label>
+          <input type="text" id="cnic" name="cnic" required />
+        </div>
+        <div class="input-group">
+          <label for="project_id">Project ID:</label>
+          <input
+            type="text"
+            id="project_id"
+            name="project_id"
+            value="<%= projectId %>"
+            required
+          />
+        </div>
+        <div class="input-group">
+          <label for="works">Works:</label>
+          <input type="text" id="works" name="works" required />
+        </div>
+        <input type="submit" class="login-btn" value="Submit" />
+      </form>
     </section>
-</body>
+  </body>
 </html>

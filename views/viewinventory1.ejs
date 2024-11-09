@@ -129,9 +129,9 @@
       </div>
     </div>
     <section>
-      <!-- <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search for items...">
-        </div> -->
+      <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search for items..." />
+      </div>
       <table id="inventoryTable">
         <thead>
           <tr>
@@ -156,28 +156,28 @@
     </section>
 
     <script>
-      // const searchInput = document.getElementById('searchInput');
-      // searchInput.addEventListener('keyup', function () {
-      //     const filter = searchInput.value.toLowerCase();
-      //     const rows = document.querySelectorAll('#inventoryTable tbody tr');
+      const searchInput = document.getElementById("searchInput");
+      searchInput.addEventListener("keyup", function () {
+        const filter = searchInput.value.toLowerCase();
+        const rows = document.querySelectorAll("#inventoryTable tbody tr");
 
-      //     rows.forEach(row => {
-      //         const cells = row.querySelectorAll('td');
-      //         let found = false;
+        rows.forEach((row) => {
+          const cells = row.querySelectorAll("td");
+          let found = false;
 
-      //         cells.forEach(cell => {
-      //             if (cell.textContent.toLowerCase().includes(filter)) {
-      //                 found = true;
-      //             }
-      //         });
+          cells.forEach((cell) => {
+            if (cell.textContent.toLowerCase().includes(filter)) {
+              found = true;
+            }
+          });
 
-      //         if (found) {
-      //             row.style.display = '';
-      //         } else {
-      //             row.style.display = 'none';
-      //         }
-      //     });
-      // });
+          if (found) {
+            row.style.display = "";
+          } else {
+            row.style.display = "none";
+          }
+        });
+      });
     </script>
   </body>
 </html>
