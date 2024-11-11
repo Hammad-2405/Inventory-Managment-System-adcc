@@ -1430,15 +1430,13 @@ app.get("/itemsissued", async (req, res) => {
     // const offset = (page - 1) * limit; // Calculate offset based on page
 
     // Query to fetch paginated results
-    const result = await pool.query(
-      'SELECT * FROM "receivings"'
-    );
+    const result = await pool.query('SELECT * FROM "receivings"');
     const receivings = result.rows.map((item1) => ({
       item_id: item1.id,
       item_name: item1.item,
       date_received: item1.date_received,
       size: item1.Size,
-      warehouse_id: item1.warehouse_id
+      warehouse_id: item1.warehouse_id,
       // image: saveImage(item1.PO),
     }));
 
@@ -2567,8 +2565,7 @@ app.post("/deleteAllocation3", async (req, res) => {
 // Handle form submission to add inventory
 app.post("/addinventory1", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } =
-      req.body;
+    const { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
@@ -2600,12 +2597,7 @@ app.post("/addinventory1", async (req, res) => {
     "Qty Required" = public."warehouse1inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
-    await pool.query(insertQuery, [
-      upperItemName,
-      size,
-      deno,
-      qtyrequired,
-    ]);
+    await pool.query(insertQuery, [upperItemName, size, deno, qtyrequired]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -2793,8 +2785,7 @@ app.post("/allocateinv1", async (req, res) => {
 
 app.post("/addinventory2", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } =
-      req.body;
+    const { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
@@ -2826,12 +2817,7 @@ app.post("/addinventory2", async (req, res) => {
     "Qty Required" = public."warehouse2inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
-    await pool.query(insertQuery, [
-      upperItemName,
-      size,
-      deno,
-      qtyrequired,
-    ]);
+    await pool.query(insertQuery, [upperItemName, size, deno, qtyrequired]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -2997,8 +2983,7 @@ app.post("/allocateinv2", async (req, res) => {
 
 app.post("/addinventory3", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } =
-      req.body;
+    const { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
 
     // Validation checks
@@ -3030,12 +3015,7 @@ app.post("/addinventory3", async (req, res) => {
     "Qty Required" = public."warehouse3inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
-    await pool.query(insertQuery, [
-      upperItemName,
-      size,
-      deno,
-      qtyrequired,
-    ]);
+    await pool.query(insertQuery, [upperItemName, size, deno, qtyrequired]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -3221,44 +3201,43 @@ app.post("/updateboq", async (req, res) => {
 });
 
 app.post("/receivinginventory.html", async (req, res) => {
-    const { item_name, receiving_date, warehouse, size } = req.body;
-    // const image = req.file ? req.file.buffer : null;
-    const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
-    
-    const upperItemName = item_name.toUpperCase();
+  const { item_name, receiving_date, warehouse, size } = req.body;
+  // const image = req.file ? req.file.buffer : null;
+  const currentDate = new Date().toISOString().split("T")[0]; // Get current date in 'YYYY-MM-DD' format
 
-    // if (receiving_date < currentDate) {
-    //   req.flash("error", "Receiving date cannot be before the current date.");
-    //   return res.render("receivinginventory", {
-    //     errorMessage: req.flash("error"),
-    //   });
-    // }
+  const upperItemName = item_name.toUpperCase();
 
-    try {
-      await pool.query("BEGIN");
-      const insertReceivingQuery =
-        'INSERT INTO receivings (date_received, item, warehouse_id, "Size") VALUES ($1, $2, $3, $4)';
-      await pool.query(insertReceivingQuery, [
-        receiving_date,
-        upperItemName,
-        warehouse,
-        size,
-      ]);
-      await pool.query("COMMIT");
+  // if (receiving_date < currentDate) {
+  //   req.flash("error", "Receiving date cannot be before the current date.");
+  //   return res.render("receivinginventory", {
+  //     errorMessage: req.flash("error"),
+  //   });
+  // }
 
-      req.flash("success", "Inventory received successfully.");
-      res.render("receivinginventory", {
-        successMessage: req.flash("success"),
-      });
-    } catch (error) {
-      await pool.query("ROLLBACK");
+  try {
+    await pool.query("BEGIN");
+    const insertReceivingQuery =
+      'INSERT INTO receivings (date_received, item, warehouse_id, "Size") VALUES ($1, $2, $3, $4)';
+    await pool.query(insertReceivingQuery, [
+      receiving_date,
+      upperItemName,
+      warehouse,
+      size,
+    ]);
+    await pool.query("COMMIT");
 
-      console.error("Error receiving inventory:", error);
-      req.flash("error", "Internal Server Error");
-      res.render("receivinginventory", { errorMessage: req.flash("error") });
-    }
+    req.flash("success", "Inventory received successfully.");
+    res.render("receivinginventory", {
+      successMessage: req.flash("success"),
+    });
+  } catch (error) {
+    await pool.query("ROLLBACK");
+
+    console.error("Error receiving inventory:", error);
+    req.flash("error", "Internal Server Error");
+    res.render("receivinginventory", { errorMessage: req.flash("error") });
   }
-);
+});
 
 app.post("/addprojects", async (req, res) => {
   const {
@@ -3383,7 +3362,7 @@ app.post("/addboq", async (req, res) => {
 
     const insertBoqQuery = `
       INSERT INTO project_boq (project_id, item_name, size, deno, "limit")
-      VALUES ($1, $2, $3, $4, $5)
+      VALUES ($1, UPPER($2), UPPER($3), UPPER($4), $5)
     `;
     await pool.query(insertBoqQuery, [
       project_id,
