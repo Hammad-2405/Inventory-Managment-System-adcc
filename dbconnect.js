@@ -2660,9 +2660,13 @@ app.post("/allocateinv1", async (req, res) => {
 
     // Check if the item exists in inventory (case-insensitive)
     const itemExistsQuery = `
-      SELECT * FROM warehouse1inventory 
-      WHERE "ITEM" = $1 
-      AND ( ("Size" = $2) OR ("Size" IS NULL AND $2 IS NULL) )
+    SELECT * FROM warehouse1inventory 
+    WHERE "ITEM" = $1 
+    AND ( 
+      ("Size" = $2) 
+      OR ("Size" IS NULL AND $2 IS NULL) 
+      OR ("Size" = '' AND ($2 IS NULL OR $2 = '')) 
+    )
     `;
     const itemExistsResult = await pool.query(itemExistsQuery, [
       upperItemName,
@@ -2817,7 +2821,12 @@ app.post("/addinventory2", async (req, res) => {
     "Qty Required" = public."warehouse2inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
-    await pool.query(insertQuery, [upperItemName, size, deno, qtyrequired]);
+    await pool.query(insertQuery, [
+      upperItemName,
+      size ? size : null,
+      deno,
+      qtyrequired,
+    ]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
@@ -3015,7 +3024,12 @@ app.post("/addinventory3", async (req, res) => {
     "Qty Required" = public."warehouse3inventory"."Qty Required" + EXCLUDED."Qty Required"
 `;
 
-    await pool.query(insertQuery, [upperItemName, size, deno, qtyrequired]);
+    await pool.query(insertQuery, [
+      upperItemName,
+      size ? size : null,
+      deno,
+      qtyrequired,
+    ]);
 
     const recvdelQuery = `
       DELETE FROM receivings 
