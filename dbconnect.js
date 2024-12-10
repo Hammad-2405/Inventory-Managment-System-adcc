@@ -1165,6 +1165,21 @@ app.get("/deleteboq", async (req, res) => {
   }
 });
 
+// const itemExistsQuery = `
+//     SELECT * FROM warehouse1inventory
+//     WHERE "ITEM" = $1
+//     AND (
+//       ("Size" = $2)
+//       OR ("Size" IS NULL AND $2 IS NULL)
+//       OR ("Size" = '' AND ($2 IS NULL OR $2 = ''))
+//     )
+//     `;
+
+// const itemExistsResult = await pool.query(itemExistsQuery, [
+//   upperItemName,
+//   size || null, // Handle null size explicitly
+// ]);
+
 app.get("/deleteboqitem", async (req, res) => {
   const { project_id, item_name, size, deno } = req.query;
 
@@ -1176,10 +1191,24 @@ app.get("/deleteboqitem", async (req, res) => {
       deno,
     });
 
-    const result = await pool.query(
-      'DELETE FROM "project_boq" WHERE project_id = $1 AND item_name = $2 AND size = $3 AND deno = $4',
-      [project_id, item_name, size, deno]
-    );
+    const deleteitemquery = `
+    DELETE FROM "project_boq" 
+    WHERE "project_id" = $1
+    AND  "item_name" = $2
+    AND ( 
+      ("size" = $3) 
+      OR ("size" IS NULL AND $3 IS NULL) 
+      OR ("size" = '' AND ($3 IS NULL OR $3 = '')) 
+    )
+    AND "deno" = $4
+    `;
+
+    const result = await pool.query(deleteitemquery, [
+      project_id,
+      item_name,
+      size || null,
+      deno,
+    ]);
 
     if (result.rowCount > 0) {
       req.flash("success", "BOQ item deleted successfully.");
