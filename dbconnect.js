@@ -2653,7 +2653,8 @@ app.post("/addinventory1", async (req, res) => {
 });
 
 app.post("/allocateinv1", async (req, res) => {
-  const { project_id, item_name, size, amount, con_id, date } = req.body;
+  const { project_id, item_name, size, amount, contractor_id, date } = req.body;
+  const con_id = contractor_id;
   const w_id = 1;
 
   // Validation checks
@@ -2882,7 +2883,8 @@ app.post("/addinventory2", async (req, res) => {
 });
 
 app.post("/allocateinv2", async (req, res) => {
-  const { project_id, item_name, size, amount, con_id, date } = req.body;
+  const { project_id, item_name, size, amount, contractor_id, date } = req.body;
+  const con_id = contractor_id;
   const w_id = 2;
 
   // Validation checks
@@ -3085,7 +3087,8 @@ app.post("/addinventory3", async (req, res) => {
 });
 
 app.post("/allocateinv3", async (req, res) => {
-  const { project_id, item_name, size, amount, con_id, date } = req.body;
+  const { project_id, item_name, size, amount, contractor_id, date } = req.body;
+  const con_id = contractor_id;
   const w_id = 3;
 
   // Validation checks
