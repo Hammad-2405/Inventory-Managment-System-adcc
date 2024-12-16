@@ -3481,14 +3481,14 @@ app.post("/addcontractors", async (req, res) => {
 
       // Check if the current allocation exceeds the total available houses
       const remainingHouses = totalHouses - totalAllocated;
-      if (noOfHouses > remainingHouses) {
-        // Rollback if allocated houses exceed remaining houses
-        await pool.query("ROLLBACK");
-        req.flash("errorMessages", [
-          `Allocation exceeds available houses. Only ${remainingHouses} houses are available for allocation.`,
-        ]);
-        return res.redirect("/addcontractors");
-      }
+      // if (noOfHouses > remainingHouses) {
+      //   // Rollback if allocated houses exceed remaining houses
+      //   await pool.query("ROLLBACK");
+      //   req.flash("errorMessages", [
+      //     `Allocation exceeds available houses. Only ${remainingHouses} houses are available for allocation.`,
+      //   ]);
+      //   return res.redirect("/addcontractors");
+      // }
     }
 
     // Insert the new contractor into the contractors table
