@@ -2594,8 +2594,13 @@ app.post("/deleteAllocation3", async (req, res) => {
 // Handle form submission to add inventory
 app.post("/addinventory1", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } = req.body;
+    let { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
+
+    // Trim whitespace from inputs
+    item = item.trim();
+    size = size ? size.trim() : null; // Trim only if size is not null
+    deno = deno.trim();
 
     // Validation checks
     if (!item || !deno || !qtyrequired) {
@@ -2819,8 +2824,13 @@ app.post("/allocateinv1", async (req, res) => {
 
 app.post("/addinventory2", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } = req.body;
+    let { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
+
+    // Trim whitespace from inputs
+    item = item.trim();
+    size = size ? size.trim() : null; // Trim only if size is not null
+    deno = deno.trim();
 
     // Validation checks
     if (!item || !deno || !qtyrequired) {
@@ -3023,8 +3033,13 @@ app.post("/allocateinv2", async (req, res) => {
 
 app.post("/addinventory3", async (req, res) => {
   try {
-    const { item, size, deno, qtyrequired, receivingId } = req.body;
+    let { item, size, deno, qtyrequired, receivingId } = req.body;
     const id = parseInt(receivingId, 10);
+
+    // Trim whitespace from inputs
+    item = item.trim();
+    size = size ? size.trim() : null; // Trim only if size is not null
+    deno = deno.trim();
 
     // Validation checks
     if (!item || !deno || !qtyrequired) {
